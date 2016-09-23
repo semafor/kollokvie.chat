@@ -1,0 +1,74 @@
+Entities
+    - User
+    - Room (either face-to-face or group chat room)
+    - Message
+    - Attachment
+    - Policy (rules for a room?)
+    - Presentation Profile
+
+User:
+    Attributes:
+        - Id (internal use only, e.g. 1,2,3)
+        - Name
+        - Email (token for logging in)
+        - Avatar
+        - Status (online, afk, offline)
+        - Language
+        - Timezone?
+
+    Relationships:
+        - participates in Room (many-to-many)
+        - creates/owns Messages (one-to-many)
+        - has Presentation Profile (one-to-one)
+        - sees Message (many-to-many)
+        - creates/owns Attachments (one-to-many)
+
+Room:
+    Attributes:
+        - Name
+        - Topic
+        - Date created
+        - Deleted
+
+    Relationships:
+        - has participating Users (many-to-many)
+        - displays Message (one-to-many)
+        - has Presentation Profile (one-to-one)
+
+Message:
+    Attributes:
+        - Date
+        - Content
+
+    Relationships:
+        - is created by User (many-to-one)
+        - is displayed by Room (many-to-one)
+        - is seen by User (many-to-many)
+        - has Attachment (one-to-many)
+
+Attachment:
+    Attributes:
+        - Mime type (text, image, sound, video, etc)
+        - Size
+        - Content
+
+    Relationships:
+        - is attached to Message
+        - owned by User (many-to-one)
+
+Policy:
+    - todo
+
+Notification profile:
+    Attributes:
+        - Notify on new message
+        - Notify on new highlight
+        - Notify when a User leaves
+        - Notify when a User joins
+        - User emojis
+        - Load images
+        - Hide avatars
+
+    Relationships:
+        - User has one (one-to-one)
+        - Room has one (one-to-one)
