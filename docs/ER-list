@@ -15,6 +15,7 @@ User:
         - Status (online, afk, offline)
         - Language
         - Timezone?
+        - Password
 
     Relationships:
         - participates in Room (many-to-many)
