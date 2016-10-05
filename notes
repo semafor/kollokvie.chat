@@ -1,0 +1,60 @@
+Project motivation and introduction
+
+- Basically et chatteprogram for studenter, med chatterom og privatsamtaler. I tillegg kan man diskutere ting som matematiske og logiske formler via vedlegg i chat-meldinger.
+
+- Vi har lyst til at studenter, når de diskuterer fag og prosjekter, ikke skal bruke facebook eller andre sosiale medier til å chatte med.
+
+- Facebook, som chatteverktøy for studenter, kan være lite fokusert, man blir distrahert.
+
+- Kollokvie.chat gir kun studenten mulighet til å diskutere med andre medstudenter.
+
+- Kollokvie.chat har muligheten til å kobles sammen med Mitt.uib, i motsetning til facebook.
+
+- Programmeringsarbeidet blir gjort i python, javascript (websockets for å motta beskjeder, ajax for å sende), html, css, sqlite, nginx/gunicorn. 
+
+Ligger godt an i forhold til PID, men har droppet cycler fordi vi jobber med kanban.
+
+Methodology
+
+- Vi har benyttet oss av Kanban, det vil si et kanban board [bilde av trello-board], med tre enkle kolonner (todo, doing, done), med maks-grense på 2 cards i doing-kolonnen.
+
+- Vår erfaring er at kanban fungerer godt. Det er enkelt å forholde seg til, og siden vi bare er to på gruppen gir det mening med mindre struktur, med tanke på metodologier som SCRUM.
+
+Team
+
+- Vi er to utviklere, der kandidat [jonas] opptrer som stakeholder
+
+Results
+
+• How far have you come?
+
+- Vi har github repo, trello-board
+
+- Vi har kommet godt i gang, vi har designet databasen som er viktig å få rett
+
+- Vi har skrevet kode for applikasjonsserver med login
+
+- Vi har kommet i gang med html-prototype
+
+- Vi har valgt teknologier (python, bottle)
+
+• What kind of results could you see at this point?
+
+- vi har en enkel struktur, vi vet hva vi har lyst å gjøre
+
+- vi har kommet godt i gang
+
+• Are there any conclusions?
+
+- Litt tidlig, (hører med hanne/sigve hva dette betyr)
+
+• What concerns you have to discuss with the assistants? 
+
+- code concerns
+
+• Do you have any other questions?
+
+None so far
+
+https://www.overleaf.com/articles/a-practical-introduction-to-natural-language-processing/snrkkrstctjy
+https://www.overleaf.com/latex/templates/fibeamer-for-the-faculty-of-arts-at-the-masaryk-university-in-brno/rbtxqwnjyndf
