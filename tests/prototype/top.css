@@ -1,0 +1,47 @@
+* {
+	margin: 0;
+	padding: 0;
+}	
+.top {
+    width: 100%;
+    height: 50px;
+    background: red;
+}
+.left {
+    width: 15%;
+    position:absolute;
+    left: 0;
+    top: 50px;
+    bottom: 70px;
+
+    background: #4682B4;
+
+}
+.main {
+	position:absolute;
+	top:50px; 
+	bottom:70px;
+	right:0;
+	left: 15%;
+    background: green;
+ }
+
+ .message {
+
+ 	background: white;
+ 	padding: 10px;
+ }
+
+ .bottom {
+ 	position:absolute;
+ 	bottom: 0;
+ 	height: 70px;
+    width: 100%;
+    background: yellow;
+}
+
+ .editor {
+ 	margin-left: 15%;
+
+
+ }
