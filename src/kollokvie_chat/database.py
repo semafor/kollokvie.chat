@@ -97,6 +97,22 @@ CREATE TABLE IF NOT EXISTS attachments
 )
 '''
 
+CREATE_MESSAGES_ATTACHMENTS = '''
+CREATE TABLE IF NOT EXISTS messages_attachments
+(
+    maid INTEGER PRIMARY KEY,
+    message_id TEXT,
+    attachment_id TEXT,
+    FOREIGN KEY(message_id) REFERENCES messages(mid),
+    FOREIGN KEY(attachment_id) REFERENCES attachments(aid)
+)
+'''
+
+LINK_MESSAGE_ATTACHMENT = '''
+INSERT INTO messages_attachments (message_id, attachment_id)
+VALUES (:attachment_id, :message_id)
+'''
+
 
 class Database:
 
@@ -117,6 +133,7 @@ class Database:
             self._cursor.execute(CREATE_ROOMS)
             self._cursor.execute(CREATE_ROOM_MESSAGES)
             self._cursor.execute(CREATE_ATTACHMENTS)
+            self._cursor.execute(CREATE_MESSAGES_ATTACHMENTS)
         except Exception:
             self._conn.rollback()
             raise
@@ -152,7 +169,7 @@ class Database:
 
             if self._cursor.lastrowid < 0:
                 raise Exception("Failed to insert message.")
-            message.mid = self._cursor.lastrowid
+            message.id = self._cursor.lastrowid
         except Exception:
             self._conn.rollback()
             raise
@@ -178,7 +195,7 @@ class Database:
             self._cursor.execute(CREATE_ROOM, room.to_row())
             if self._cursor.lastrowid < 0:
                 raise Exception("Failed to insert room.")
-            room.rid = self._cursor.lastrowid
+            room.id = self._cursor.lastrowid
         except Exception:
             self._conn.rollback()
             raise
@@ -193,6 +210,34 @@ class Database:
         try:
             self._cursor.execute(LINK_ROOM_MESSAGE, {
                 'room_id': room.get_id(),
+                'message_id': message.get_id(),
+            })
+        except Exception:
+            self._conn.rollback()
+            raise
+        else:
+            self._conn.commit()
+
+    def add_attachment(self, attachment):
+        try:
+            self._cursor.execute(CREATE_ATTACHMENT, attachment.to_srow())
+            if self._cursor.lastrowid < 0:
+                raise Exception("Failed to insert attachment.")
+            attachment.id = self._cursor.lastrowid
+        except Exception:
+            self._conn.rollback()
+            raise
+        else:
+            self._conn.commit()
+
+    def link_attachment_message(self, message, attachment):
+        if attachment.get_id() < 0:
+            raise sqlite3.DatabaseError("Attachment was not reified.")
+        if message.get_id() < 0:
+            raise sqlite3.DatabaseError("Message was not reified.")
+        try:
+            self._cursor.execute(LINK_MESSAGE_ATTACHMENT, {
+                'attachment_id': attachment.get_id(),
                 'message_id': message.get_id(),
             })
         except Exception:

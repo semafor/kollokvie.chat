@@ -1,6 +1,15 @@
 from passlib.hash import sha256_crypt as hasher
 
 
+class Base:
+
+    def __init__(self):
+        self.id = -1
+
+    def get_id(self):
+        return self.id
+
+
 class User:
 
     _config = {
@@ -45,39 +54,53 @@ class User:
         return self.email
 
 
-class Message:
-
-    def __init__(self):
-        self.mid = -1
+class Message(Base):
 
     @staticmethod
     def from_row(row):
         msg = Message()
-        msg.mid = row['mid']
+        msg.id = row['mid']
         msg.date = row['date']
         msg.content = row['content']
         return msg
 
     def to_row(self):
         return {
-            'mid': self.mid,
+            'mid': self.id,
             'date': self.date,
             'content': self.content,
         }
 
     def get_id(self):
-        return self.mid
+        return self.id
 
 
-class Room:
+class Attachment(Base):
 
-    def __init__(self):
-        self.rid = -1
+    @staticmethod
+    def from_row(row):
+        att = Attachment()
+        att.id = row['aid']
+        att.data = row['data']
+        att.size = row['size']
+        att.mime_type = row['mime_type']
+        return att
+
+    def to_row(self):
+        return {
+            'aid': self.id,
+            'data': self.data,
+            'size': self.size,
+            'mime_type': self.mime_type,
+        }
+
+
+class Room(Base):
 
     @staticmethod
     def from_row(row):
         room = Room()
-        room.rid = row['rid']
+        room.id = row['rid']
         room.name = row['name']
         room.topic = row['topic']
         room.date_created = row['date_created']
@@ -93,6 +116,3 @@ class Room:
             'deleted': int(self.deleted),
             'language': self.language,
         }
-
-    def get_id(self):
-        return self.rid

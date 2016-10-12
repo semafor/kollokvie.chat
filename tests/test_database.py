@@ -143,5 +143,13 @@ class TestRooms(BaseTestCase):
         self.assertEqual(int(res[0]['message_id']), self.msg.get_id())
 
 
+class TestAttachments(BaseTestCase):
+
+    def setUp(self):
+        super(TestAttachments, self).setUp()
+        self.user = create_test_user()
+        self.msg = create_test_message()
+
+
 if __name__ == '__main__':
     unittest.main()
