@@ -1,5 +1,5 @@
 import kollokvie_chat.database as database
-import kollokvie_chat.model as model
+import kollokvie_chat.models as models
 
 import datetime
 import sqlite3
@@ -7,7 +7,7 @@ import unittest
 
 
 def create_test_user():
-    user = model.User()
+    user = models.User()
     user.name = 'Test User'
     user.email = 'test@example.org'
     user.avatar = 'avatar'
@@ -18,14 +18,14 @@ def create_test_user():
 
 
 def create_test_message():
-    msg = model.Message()
+    msg = models.Message()
     msg.date = datetime.datetime(2007, 12, 5, hour=12, minute=30, second=0)
     msg.content = 'some content'
     return msg
 
 
 def create_test_room():
-    room = model.Room()
+    room = models.Room()
     room.name = 'Some room'
     room.topic = 'topic'
     room.date_created = datetime.datetime(2005, 4, 5, hour=12, minute=30,
@@ -33,6 +33,14 @@ def create_test_room():
     room.deleted = False
     room.language = 'nb_no'
     return room
+
+
+def create_test_attachment():
+    attachment = models.Attachment()
+    attachment.data = 'data'
+    attachment.size = 5000
+    attachment.mime_type = 'text/plain'
+    return attachment
 
 
 class BaseTestCase(unittest.TestCase):
@@ -147,8 +155,37 @@ class TestAttachments(BaseTestCase):
 
     def setUp(self):
         super(TestAttachments, self).setUp()
-        self.user = create_test_user()
         self.msg = create_test_message()
+        self.attachment = create_test_attachment()
+
+    def test_add_attachment(self):
+        self.db.add_attachment(self.attachment)
+        res = self.db.executeSelect('SELECT * FROM attachments')
+        self.assertEqual(len(res), 1)
+        self.assertEqual(res[0]['data'], self.attachment.data)
+
+    def test_link_attachment_creating_it_first(self):
+        self.db.add_message(self.msg)
+        with self.assertRaises(sqlite3.DatabaseError):
+            self.db.link_attachment_message(self.msg, self.attachment)
+
+    def test_link_attachment_creating_a_message_first(self):
+        self.db.add_attachment(self.attachment)
+        with self.assertRaises(sqlite3.DatabaseError):
+            self.db.link_attachment_message(self.msg, self.attachment)
+
+    def test_link_attachment_message(self):
+        self.db.add_attachment(self.attachment)
+        self.db.add_message(self.msg)
+        self.db.link_attachment_message(self.msg, self.attachment)
+
+    def test_wrong_arg_order_one(self):
+        with self.assertRaises(TypeError):
+            self.db.link_attachment_message(self.attachment, self.msg)
+
+    def test_wrong_arg_order_two(self):
+        with self.assertRaises(TypeError):
+            self.db.link_attachment_message(self.msg, self.msg)
 
 
 if __name__ == '__main__':

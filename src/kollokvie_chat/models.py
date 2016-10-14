@@ -16,6 +16,15 @@ class User:
         'hashing_rounds': 800000
     }
 
+    def __init__(self):
+        super(User, self).__init__()
+        self.name = ''
+        self.email = ''
+        self.avatar = ''
+        self.status = ''
+        self.language = ''
+        self.password = ''
+
     @staticmethod
     def from_row(row):
         user = User()
@@ -36,9 +45,6 @@ class User:
             'language': self.language,
             'password': self.password,
         }
-
-    def __init__(self):
-        pass
 
     def set_password(self, pwd, config=None):
         if config is None:

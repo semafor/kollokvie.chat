@@ -1,4 +1,4 @@
-import kollokvie_chat.model as model
+import kollokvie_chat.models as models
 import unittest
 
 
@@ -13,7 +13,7 @@ class TestUsers(unittest.TestCase):
             'language': 'language',
             'password': 'password',
         }
-        user = model.User.from_row(row)
+        user = models.User.from_row(row)
 
         self.assertEqual(user.name, row['name'])
         self.assertEqual(user.email, row['email'])
@@ -23,12 +23,12 @@ class TestUsers(unittest.TestCase):
         self.assertEqual(user.password, row['password'])
 
     def test_create_password(self):
-        user = model.User()
+        user = models.User()
         user.set_password('hunter2', {'hashing_rounds': 2000})
         self.assertIsNotNone(user.password)
 
     def test_compare_password(self):
-        user = model.User()
+        user = models.User()
         user.set_password('hunter2', {'hashing_rounds': 2000})
         self.assertTrue(user.compare_password('hunter2'))
         self.assertFalse(user.compare_password('wrong'))

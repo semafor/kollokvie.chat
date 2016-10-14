@@ -1,5 +1,5 @@
 import sqlite3
-import kollokvie_chat.model as model
+import kollokvie_chat.models as models
 
 
 CREATE_USERS = '''
@@ -97,6 +97,11 @@ CREATE TABLE IF NOT EXISTS attachments
 )
 '''
 
+CREATE_ATTACHMENT = '''
+INSERT INTO attachments (data, size, mime_type)
+VALUES (:data, :size, :mime_type)
+'''
+
 CREATE_MESSAGES_ATTACHMENTS = '''
 CREATE TABLE IF NOT EXISTS messages_attachments
 (
@@ -161,7 +166,7 @@ class Database:
         if res is None:
             return None
         else:
-            return model.User.from_row(res)
+            return models.User.from_row(res)
 
     def add_message(self, message):
         try:
@@ -177,6 +182,12 @@ class Database:
             self._conn.commit()
 
     def link_user_message(self, user, message):
+        if not type(user) is models.User:
+            raise TypeError('First argument not a User.')
+
+        if not type(message) is models.Message:
+            raise TypeError('First argument not a Message.')
+
         if message.get_id() < 0:
             raise sqlite3.DatabaseError("Message was not reified.")
         try:
@@ -203,6 +214,12 @@ class Database:
             self._conn.commit()
 
     def link_room_message(self, room, message):
+        if not type(message) is models.Message:
+            raise TypeError('First argument not a Message.')
+
+        if not type(room) is models.Room:
+            raise TypeError('First argument not a Room.')
+
         if room.get_id() < 0:
             raise sqlite3.DatabaseError("Room was not reified.")
         if message.get_id() < 0:
@@ -220,7 +237,7 @@ class Database:
 
     def add_attachment(self, attachment):
         try:
-            self._cursor.execute(CREATE_ATTACHMENT, attachment.to_srow())
+            self._cursor.execute(CREATE_ATTACHMENT, attachment.to_row())
             if self._cursor.lastrowid < 0:
                 raise Exception("Failed to insert attachment.")
             attachment.id = self._cursor.lastrowid
@@ -231,6 +248,12 @@ class Database:
             self._conn.commit()
 
     def link_attachment_message(self, message, attachment):
+        if not type(message) is models.Message:
+            raise TypeError('First argument not a Message.')
+
+        if not type(attachment) is models.Attachment:
+            raise TypeError('First argument not a Attachment.')
+
         if attachment.get_id() < 0:
             raise sqlite3.DatabaseError("Attachment was not reified.")
         if message.get_id() < 0:

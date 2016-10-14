@@ -1,0 +1,28 @@
+% rebase('base.html', title='Sign up')
+% setdefault('name', '')
+% setdefault('email', '')
+
+% if defined('errors'):
+<ul class="errors">
+  % for error in errors:
+    <li>{{error}}</li>
+  % end
+</ul>
+% end
+
+<form class="pure-form pure-form-stacked" action="/signup" method="post">
+    <fieldset>
+        <legend>Sign up for Kollokvie.chat</legend>
+
+        <label for="name">Your name</label>
+        <input name="name" id="name" type="text" placeholder="E.g. Ford Prefect" value="{{name}}">
+
+        <label for="email">Email</label>
+        <input name="email" id="email" type="email" placeholder="ford@example.org" value="{{email}}">
+
+        <label for="password">Password</label>
+        <input name="password" id="password" type="password" placeholder="Password">
+
+        <button type="submit" class="pure-button pure-button-primary">Sign up</button>
+    </fieldset>
+</form>
