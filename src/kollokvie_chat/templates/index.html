@@ -1,3 +1,9 @@
 % rebase('base.html', title='Hello')
 
 <p>Hi {{name}}.</p>
+
+<ul class="rooms">
+  % for room in rooms:
+    <li><a href="/room/{{room.get_id()}}/{{room.slug}}">{{room.name}}</a></li>
+  % end
+</ul>

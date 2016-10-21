@@ -1,3 +1,4 @@
 bottle
 bottle-login
 passlib
+python-slugify

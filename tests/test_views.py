@@ -54,6 +54,7 @@ class BaseTestCase(unittest.TestCase):
         self.db = database.Database(':memory:')
         self.db.initialize()
         views.db = self.db
+        models.db = self.db
 
         self.request = FakeRequest()
         self.login_plugin = FakeLoginPlugin()
@@ -67,6 +68,17 @@ class BaseTestCase(unittest.TestCase):
     def tearDown(self):
         self.db.cleanup()
         del self.db
+
+
+class BaseLoggedInCase(BaseTestCase):
+
+    def setUp(self):
+        super(BaseLoggedInCase, self).setUp()
+        user = models.User()
+        user.email = 'test@example.org'
+        user.save()
+        self.user = user
+        self.login_plugin.user = user
 
 
 class TestSignup(BaseTestCase):
@@ -102,7 +114,7 @@ class TestSignup(BaseTestCase):
     def test_duplicate_email(self):
         user = models.User()
         user.email = 'jonas@example.org'
-        self.db.add_user(user)
+        user.save()
 
         vals = {
             'name': 'Jonas',
@@ -124,3 +136,47 @@ class TestSignup(BaseTestCase):
 
         out = views.signup_post()
         self.assertIn('enter a password', out)
+
+
+class TestRoom(BaseLoggedInCase):
+
+    def test_view_rooms(self):
+        room = models.Room()
+        room.name = 'room name'
+        room.slug = 'foo-bar'
+        room.topic = 'topic'
+        room.save()
+
+        message = models.Message()
+        message.content = 'some message'
+        message.save()
+        room.add(message)
+
+        out = views.room(room.get_id(), room.slug)
+        self.assertIn(room.name, out)
+        self.assertIn(message.content, out)
+
+    def test_view_part(self):
+        room = models.Room()
+        room.name = 'room name'
+        room.slug = 'foo-bar'
+        room.save()
+        room.add(self.user)
+
+        with self.assertRaises(HTTPResponse):
+            views.room_part(room.get_id(), room.slug)
+
+    def test_view_say(self):
+        room = models.Room()
+        room.name = 'room name'
+        room.slug = 'foo-bar'
+        room.save()
+        room.add(self.user)
+
+        vals = {'message': 'some-message'}
+        self.forms.set(vals)
+        with self.assertRaises(HTTPResponse):
+            views.room_say(room.get_id(), room.slug)
+
+        self.assertEqual(len(room.get_messages()), 1)
+        self.assertEqual(room.get_messages()[0].content, 'some-message')

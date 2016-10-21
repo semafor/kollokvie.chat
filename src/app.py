@@ -1,4 +1,5 @@
 import kollokvie_chat.database as database
+import kollokvie_chat.models as models
 import kollokvie_chat.views as views
 
 from bottle import Bottle, run, template, request, redirect
@@ -14,16 +15,20 @@ login_plugin = app.install(LoginPlugin())
 
 @login_plugin.load_user
 def load_user_by_id(user_id):
-    print('load_user_by_id', db.get_user(user_id))
-    return db.get_user(user_id)
+    print('load_user_by_id', models.User.get(user_id))
+    return models.User.get(user_id)
 
 
 db = database.Database(app.config['DATABASE'])
 db.initialize()
 views.db = db
+models.db = db
 
 app.route('/', ['GET'], views.index)
 app.route('/login', ['GET'], views.login)
+app.route('/room/<rid>/<slug>', ['GET'], views.room)
+app.route('/room/<rid>/<slug>/part', ['GET'], views.room_part)
+app.route('/room/<rid>/<slug>/say', ['POST'], views.room_say)
 app.route('/login', ['POST'], views.do_login)
 app.route('/logout', ['GET'], views.logout)
 app.route('/signup', ['GET'], views.signup_get)

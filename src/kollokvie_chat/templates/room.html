@@ -1,0 +1,15 @@
+% rebase('base.html', title='View room')
+
+{{room.name}}
+
+<ul class="messages">
+  % for message in messages:
+    <li>{{message.content}}</li>
+  % end
+</ul>
+
+
+<form id="message_form" action="/room/{{room.get_id()}}/{{room.slug}}/say" method="POST">
+    <input type="text" placeholder="Say something…" name="message">
+    <button for="message_form">Enter</button>
+</form>

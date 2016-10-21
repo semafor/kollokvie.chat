@@ -1,7 +1,7 @@
-from kollokvie_chat.models import User
+from kollokvie_chat.models import Message, Room, User
 
 from bottle import template, request, redirect, static_file
-from bottle_login import LoginPlugin
+from datetime import datetime
 from html import escape
 
 
@@ -40,12 +40,12 @@ def signup_post():
     user.email = email
     user.set_password(password, config={'hashing_rounds': 2000})
 
-    if db.get_user(email) is not None:
+    if User.get(email) is not None:
         errors = ['A user with email %s already exist.' % escape(email)]
         return signup_error(errors, email=email, name=name)
 
     try:
-        db.add_user(user)
+        user.save()
     except Exception as e:
         errors = ['Something went wrong: %s' % e]
         return signup_error(errors)
@@ -60,13 +60,13 @@ def signup_error(errors, **kwargs):
 
 def index():
     user = get_login_plugin(request).get_user()
-    print(user)
     if user is None:
         return redirect('/login')
 
     return template('index',
                     template_lookup=['src/kollokvie_chat/templates/'],
-                    name=user.name)
+                    name=user.name,
+                    rooms=Room.get_all(order_by='name'))
 
 
 def logout():
@@ -81,7 +81,7 @@ def login():
 def do_login():
     email = str(request.POST.get('email'))
     pwd = str(request.POST.get('password'))
-    user = db.get_user(email)
+    user = User.get(email)
 
     if user is None or not user.compare_password(pwd):
         return template('login', errors=[
@@ -91,6 +91,59 @@ def do_login():
 
     get_login_plugin(request).login_user(email)
     return redirect('/')
+
+
+def room(rid=None, slug=None):
+    if slug is None:
+        return redirect('/')
+
+    user = get_login_plugin(request).get_user()
+
+    # TODO: replace with decorator
+    if user is None:
+        return redirect('/')
+
+    room = Room.get(rid)
+    room.add(user)
+    return template('room', template_lookup=['src/kollokvie_chat/templates/'],
+                    room=room, rooms=Room.get_all(order_by='name'),
+                    messages=room.get_messages())
+
+
+def room_part(rid=None, slug=None):
+    if slug is None:
+        return redirect('/')
+
+    user = get_login_plugin(request).get_user()
+
+    # TODO: replace with decorator
+    if user is None:
+        return redirect('/')
+
+    room = Room.get(rid)
+    room.remove(user)
+    return redirect('/')
+
+
+def room_say(rid=None, slug=None):
+    if slug is None or rid is None:
+        return redirect('/')
+
+    user = get_login_plugin(request).get_user()
+
+    # TODO: replace with decorator
+    if user is None:
+        return redirect('/')
+
+    message = request.forms.get('message')
+    msg = Message()
+    msg.content = message
+    msg.date = datetime.now()
+    msg.save()
+
+    room = Room.get(rid)
+    room.add(msg)
+    return redirect(room.get_url())
 
 
 def javascripts(filename):
