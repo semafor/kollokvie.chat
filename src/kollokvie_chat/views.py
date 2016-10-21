@@ -143,6 +143,7 @@ def room_say(rid=None, slug=None):
 
     room = Room.get(rid)
     room.add(msg)
+    user.add(msg)
     return redirect(room.get_url())
 
 

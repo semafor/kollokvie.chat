@@ -180,3 +180,5 @@ class TestRoom(BaseLoggedInCase):
 
         self.assertEqual(len(room.get_messages()), 1)
         self.assertEqual(room.get_messages()[0].content, 'some-message')
+        self.assertEqual(room.get_messages()[0].get_owner().get_id(),
+                         self.user.get_id())

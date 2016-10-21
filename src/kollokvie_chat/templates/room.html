@@ -4,7 +4,7 @@
 
 <ul class="messages">
   % for message in messages:
-    <li>{{message.content}}</li>
+    <li><span class="user">{{message.get_owner().name}}</span>: <span class="message">{{message.content}}</span></li>
   % end
 </ul>
 
