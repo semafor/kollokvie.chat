@@ -7,7 +7,7 @@ from slugify import slugify
 db = None
 
 
-class Base:
+class Base(object):
 
     SQL_UPDATE = None
     SQL_INSERT = None

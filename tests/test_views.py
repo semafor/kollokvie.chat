@@ -150,6 +150,7 @@ class TestRoom(BaseLoggedInCase):
         message = models.Message()
         message.content = 'some message'
         message.save()
+        self.user.add(message)
         room.add(message)
 
         out = views.room(room.get_id(), room.slug)
