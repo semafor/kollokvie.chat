@@ -24,6 +24,9 @@ class FakeApp:
 
     def __init__(self):
         self.plugins = []
+        self.config = {
+            'TMPL_FOLDER': 'src/kollokvie_chat/templates/'
+        }
 
     def _add_plugin(self, plugin):
         self.plugins.append(plugin)
@@ -174,12 +177,34 @@ class TestRoom(BaseLoggedInCase):
         room.save()
         room.add(self.user)
 
-        vals = {'message': 'some-message'}
+        vals = {'message': 'some-message', 'client_id': 'foo'}
         self.forms.set(vals)
-        with self.assertRaises(HTTPResponse):
-            views.room_say(room.get_id(), room.slug)
+
+        views.room_say(room.get_id(), room.slug)
 
         self.assertEqual(len(room.get_messages()), 1)
         self.assertEqual(room.get_messages()[0].content, 'some-message')
         self.assertEqual(room.get_messages()[0].get_owner().get_id(),
                          self.user.get_id())
+
+    def test_messages_from(self):
+        room = models.Room()
+        room.name = 'room name'
+        room.slug = 'foo-bar'
+        room.save()
+
+        message1 = models.Message()
+        message1.content = 'first'
+        message1.save()
+        self.user.add(message1)
+        room.add(message1)
+
+        message2 = models.Message()
+        message2.content = 'second'
+        message2.save()
+        self.user.add(message2)
+        room.add(message2)
+
+        out = views.messages_from(room.get_id(), room.slug, 1)
+        self.assertIn(message2.content, out)
+        self.assertNotIn(message1.content, out)

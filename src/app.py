@@ -11,6 +11,7 @@ app.config['DATABASE'] = 'kollokvie_chat.db'
 app.config['STATIC_FOLDER'] = 'src/kollokvie_chat/static'
 app.config['HOST'] = '0.0.0.0'
 app.config['PORT'] = 8080
+app.config['TMPL_FOLDER'] = 'src/kollokvie_chat/templates/'
 
 login_plugin = app.install(LoginPlugin())
 
@@ -30,11 +31,12 @@ app.route('/login', ['GET'], views.login)
 app.route('/room/<rid>/<slug>', ['GET'], views.room)
 app.route('/room/<rid>/<slug>/part', ['GET'], views.room_part)
 app.route('/room/<rid>/<slug>/say', ['POST'], views.room_say)
+app.route('/room/<rid>/<slug>/messages/from/<msg_id>', ['GET'],
+          views.messages_from)
 app.route('/login', ['POST'], views.do_login)
 app.route('/logout', ['GET'], views.logout)
 app.route('/signup', ['GET'], views.signup_get)
 app.route('/signup', ['POST'], views.signup_post)
-app.route('/socket/<rid>/<slug>', ['GET'], views.socket)
 
 app.route('/<filename:re:.*\.js>', ['GET'], views.javascripts)
 app.route('/<filename:re:.*\.css>', ['GET'], views.stylesheets)
