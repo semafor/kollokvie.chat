@@ -1,47 +1,140 @@
 * {
 	margin: 0;
 	padding: 0;
+
 }	
+
+body {
+
+    font-family: "verdana", sans-serif; 
+
+}
+
+
+
 .top {
-    width: 100%;
+    position: absolute;
+    width: 80%;
     height: 50px;
-    background: red;
+    left: 20%;
+    border-bottom: 1px solid #ccc;
+}
+.top h1 {
+    margin: 0 20px;
+    line-height: 50px;
+    font-weight: normal;
+    font-size: 22px;
+}   
+.top h1:before {
+    content: "#";
 }
 .left {
-    width: 15%;
+    width: 20%;
     position:absolute;
     left: 0;
-    top: 50px;
-    bottom: 70px;
-
-    background: #4682B4;
+    top: 0px;
+    bottom: 0px;
+    background: #0D4378;
 
 }
+
+.channellist {
+    margin: 50px;
+    list-style: none;
+    font-size: 20px;
+    
+}
+
+.channellist a {
+    color: white;
+    text-decoration: none;
+    
+    }
+
 .main {
 	position:absolute;
-	top:50px; 
-	bottom:70px;
+	top: 60px; 
+	bottom:60px;
 	right:0;
-	left: 15%;
-    background: green;
+	left: 20%;
+    background: white;
+    overflow: scroll;
  }
 
- .message {
+ .user-avatar {
 
- 	background: white;
- 	padding: 10px;
+    width: 30px;
+    display: block;
+    float: left;
+    padding: 5px 10px;
+ }
+
+
+
+ .user-label {
+font-weight: bold;
+
+ }
+
+ .user-name {
+    display: block;
+    
+ }
+
+.message-date {
+
+    color: gray;
+
+}
+
+.message-content {
+    margin-left: 50px;
+    display: block;
+ }  
+
+ .message-list li {
+
+    margin-bottom: 15px;
+ }
+
+ .message-list {
+
+    list-style: none;
+    margin-right: 20px;
  }
 
  .bottom {
+    background: white;
  	position:absolute;
  	bottom: 0;
- 	height: 70px;
-    width: 100%;
-    background: yellow;
+ 	height: 90px;
+    width: 80%;
+    left: 20%;
+    border-top: 1px solid #ccc  ;
 }
 
  .editor {
- 	margin-left: 15%;
 
+    margin: 15px;
+
+
+ }
+
+
+
+
+ .messagebutton{
+
+
+
+
+ }
+
+ .messageinput {
+    font-size: 16px;
+    padding: 2px 5px;
+    height: 45px;
+    width: 80%;
+    display: inline-block;
 
  }
