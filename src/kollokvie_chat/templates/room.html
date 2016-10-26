@@ -2,7 +2,7 @@
 
 {{room.name}}
 
-<ul class="messages">
+<ul class="messages" id="message_list">
   % for message in messages:
     <li><span class="user">{{message.get_owner().name}}</span>: <span class="message">{{message.content}}</span></li>
   % end
@@ -10,16 +10,52 @@
 
 
 <form id="message_form" action="/room/{{room.get_id()}}/{{room.slug}}/say" method="POST">
-    <input type="text" placeholder="Say something…" name="message">
+    <input id="message_input" type="text" placeholder="Say something…" name="message">
     <button for="message_form">Enter</button>
 </form>
 
 <script type="text/javascript">
-var ws = new WebSocket("ws://localhost:8080/socket");
+var ws = new WebSocket("ws://{{socket}}");
+
+var message_list = document.getElementById("message_list");
+
+var form = document.getElementById("message_form");
+var message_input = document.getElementById("message_input");
+
+form.addEventListener('submit', function (e) {
+    console.log(e);
+    e.preventDefault();
+
+    var data = new FormData(form);
+    var cid = makeid();
+    data.append('client_id', cid);
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', form.action, true);
+
+    // TODO: more event callbacks
+    xhr.onload = function () {
+        message_list.insertAdjacentHTML('beforeend', this.responseText);
+        message_input.value = "";
+    };
+    xhr.send(data);
+});
 // ws.onopen = function() {
 //     ws.send("Hello, world");
 // };
 ws.onmessage = function (evt) {
-    alert(evt.data);
+    // alert(evt.data);
+    console.log('onmessage', evt.data)
+    message_list.insertAdjacentHTML('beforeend', evt.data);
 };
+
+function makeid()
+{
+    var text = "";
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+    for( var i=0; i < 5; i++ )
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+    return text;
+}
 </script>

@@ -5,19 +5,18 @@ import kollokvie_chat.views as views
 from bottle import Bottle, run
 from bottle_login import LoginPlugin
 
-from geventwebsocket.handler import WebSocketHandler
-
 app = Bottle()
 app.config['SECRET_KEY'] = 'secret'
 app.config['DATABASE'] = 'kollokvie_chat.db'
 app.config['STATIC_FOLDER'] = 'src/kollokvie_chat/static'
+app.config['HOST'] = '0.0.0.0'
+app.config['PORT'] = 8080
 
 login_plugin = app.install(LoginPlugin())
 
 
 @login_plugin.load_user
 def load_user_by_id(user_id):
-    print('load_user_by_id', models.User.get(user_id))
     return models.User.get(user_id)
 
 
@@ -35,7 +34,7 @@ app.route('/login', ['POST'], views.do_login)
 app.route('/logout', ['GET'], views.logout)
 app.route('/signup', ['GET'], views.signup_get)
 app.route('/signup', ['POST'], views.signup_post)
-app.route('/socket', ['GET'], views.socket)
+app.route('/socket/<rid>/<slug>', ['GET'], views.socket)
 
 app.route('/<filename:re:.*\.js>', ['GET'], views.javascripts)
 app.route('/<filename:re:.*\.css>', ['GET'], views.stylesheets)
@@ -43,5 +42,5 @@ app.route('/<filename:re:.*\.(jpg|png|gif|ico)>', ['GET'], views.images)
 app.route('/<filename:re:.*\.(eot|ttf|woff|svg)>', ['GET'], views.fonts)
 
 if __name__ == '__main__':
-    run(app, host='localhost', port=8080, debug=True,
-        reloader=True, server='gevent', handler_class=WebSocketHandler)
+    run(app, host=app.config['HOST'], port=app.config['PORT'], debug=True,
+        reloader=True)

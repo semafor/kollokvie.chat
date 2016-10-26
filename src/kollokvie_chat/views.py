@@ -1,16 +1,17 @@
 from kollokvie_chat.models import Message, Room, User
 
+import gevent
+import Queue
 from bottle import abort, template, request, redirect, static_file
 from datetime import datetime
 from cgi import escape
 
-from gevent import monkey
+from gevent.lock import Semaphore
 from geventwebsocket import WebSocketError
-from time import sleep
-
-monkey.patch_all()
 
 db = None
+
+message_queue = Queue.Queue()
 
 
 def get_login_plugin(request):
@@ -110,9 +111,16 @@ def room(rid=None, slug=None):
 
     room = Room.get(rid)
     room.add(user)
-    return template('room', template_lookup=['src/kollokvie_chat/templates/'],
-                    room=room, rooms=Room.get_all(order_by='name'),
-                    messages=room.get_messages())
+    return template(
+        'room', template_lookup=['src/kollokvie_chat/templates/'],
+        room=room, rooms=Room.get_all(order_by='name'), user=user,
+        messages=room.get_messages(),
+        socket='%s:%d/socket/%s/%s' % (
+            request.app.config['HOST'],
+            request.app.config['PORT'],
+            room.get_id(), room.slug
+        )
+    )
 
 
 def room_part(rid=None, slug=None):
@@ -131,6 +139,7 @@ def room_part(rid=None, slug=None):
 
 
 def room_say(rid=None, slug=None):
+
     if slug is None or rid is None:
         return redirect('/')
 
@@ -149,10 +158,22 @@ def room_say(rid=None, slug=None):
     room = Room.get(rid)
     room.add(msg)
     user.add(msg)
-    # ws = create_connection("ws://localhost:8080/socket")
-    # ws.send("Hello, World (from server)")
-    # ws.close()
-    return redirect(room.get_url())
+
+    from_js = False
+    client_id = request.forms.get('client_id')
+    if client_id:
+        msg.client_id = client_id
+        from_js = True
+
+    message_queue.put(msg)
+
+    if from_js:
+        return template(
+            'message_js', template_lookup=['src/kollokvie_chat/templates/'],
+            message=msg
+        )
+    else:
+        return redirect(room.get_url())
 
 
 def javascripts(filename):
@@ -175,15 +196,43 @@ def fonts(filename):
                        request.app.config['STATIC_FOLDER'])
 
 
-def socket():
-    wsock = request.environ.get('wsgi.websocket')
-    if not wsock:
-        abort(400, 'Expected WebSocket request.')
-    while True:
-        try:
-            message = wsock.receive()
-            wsock.send("Your message was: %r" % message)
-            sleep(3)
-            wsock.send("Your message was: %r" % message)
-        except WebSocketError:
-            break
+def socket(rid=None, slug=None):
+    pass
+    # if slug is None or rid is None:
+    #     return
+
+    # sem = Semaphore()
+
+    # wsock = request.environ.get('wsgi.websocket')
+    # if not wsock:
+    #     abort(400, 'Expected WebSocket request.')
+
+    # def wait(ws, _sem):
+
+    #     while True:
+    #         try:
+    #             msg = message_queue.get_nowait()
+
+    #             user = msg.get_owner()
+    #             print('websocket saw', msg.content, 'from user', user.name)
+
+    #             if user is not None:
+
+    #                 ws.send(
+    #                     template(
+    #                         '''
+    #                         <li data-client-id="{{message.client_id}}">
+    #                             <span class="user">{{message.get_owner().name}}</span>: <span class="message">{{message.content}}</span>
+    #                         </li>
+    #                         ''',  # noqa
+    #                         message=msg
+    #                     )
+    #                 )
+
+    #             message_queue.task_done()
+    #         except Queue.Empty:
+    #             pass
+
+    #         gevent.sleep(0)
+
+    # gevent.spawn(wait, wsock, sem)

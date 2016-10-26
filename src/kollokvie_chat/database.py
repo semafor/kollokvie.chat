@@ -98,6 +98,7 @@ class Database(object):
     def initialize(self):
         self._conn = sqlite3.connect(self._path)
         self._conn.row_factory = sqlite3.Row
+        self._conn.text_factory = str
         self._cursor = self._conn.cursor()
         try:
             self._cursor.execute('PRAGMA foreign_keys')
