@@ -88,7 +88,7 @@ CREATE TABLE IF NOT EXISTS messages_attachments
 '''
 
 
-class Database:
+class Database(object):
 
     def __init__(self, path):
         self._conn = None

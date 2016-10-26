@@ -2,8 +2,10 @@ import kollokvie_chat.database as database
 import kollokvie_chat.models as models
 import kollokvie_chat.views as views
 
-from bottle import Bottle, run, template, request, redirect
+from bottle import Bottle, run
 from bottle_login import LoginPlugin
+
+from geventwebsocket.handler import WebSocketHandler
 
 app = Bottle()
 app.config['SECRET_KEY'] = 'secret'
@@ -33,6 +35,7 @@ app.route('/login', ['POST'], views.do_login)
 app.route('/logout', ['GET'], views.logout)
 app.route('/signup', ['GET'], views.signup_get)
 app.route('/signup', ['POST'], views.signup_post)
+app.route('/socket', ['GET'], views.socket)
 
 app.route('/<filename:re:.*\.js>', ['GET'], views.javascripts)
 app.route('/<filename:re:.*\.css>', ['GET'], views.stylesheets)
@@ -40,4 +43,5 @@ app.route('/<filename:re:.*\.(jpg|png|gif|ico)>', ['GET'], views.images)
 app.route('/<filename:re:.*\.(eot|ttf|woff|svg)>', ['GET'], views.fonts)
 
 if __name__ == '__main__':
-    run(app, host='localhost', port=8080, debug=True)
+    run(app, host='localhost', port=8080, debug=True,
+        reloader=True, server='gevent', handler_class=WebSocketHandler)

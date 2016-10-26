@@ -1,9 +1,14 @@
 from kollokvie_chat.models import Message, Room, User
 
-from bottle import template, request, redirect, static_file
+from bottle import abort, template, request, redirect, static_file
 from datetime import datetime
-from html import escape
+from cgi import escape
 
+from gevent import monkey
+from geventwebsocket import WebSocketError
+from time import sleep
+
+monkey.patch_all()
 
 db = None
 
@@ -143,6 +148,10 @@ def room_say(rid=None, slug=None):
 
     room = Room.get(rid)
     room.add(msg)
+    user.add(msg)
+    # ws = create_connection("ws://localhost:8080/socket")
+    # ws.send("Hello, World (from server)")
+    # ws.close()
     return redirect(room.get_url())
 
 
@@ -164,3 +173,17 @@ def images(filename):
 def fonts(filename):
     return static_file(filename, root='%s/fonts' %
                        request.app.config['STATIC_FOLDER'])
+
+
+def socket():
+    wsock = request.environ.get('wsgi.websocket')
+    if not wsock:
+        abort(400, 'Expected WebSocket request.')
+    while True:
+        try:
+            message = wsock.receive()
+            wsock.send("Your message was: %r" % message)
+            sleep(3)
+            wsock.send("Your message was: %r" % message)
+        except WebSocketError:
+            break

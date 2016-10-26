@@ -1,4 +1,4 @@
 export PYTHONPATH=$PYTHONPATH:$PWD/src/
-PY=`which python3`
+PY=`which python`
 
-python3 -m unittest discover -s tests -v
+python -m unittest discover -s tests -v

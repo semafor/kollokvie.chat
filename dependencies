@@ -1,4 +1,2 @@
-bottle
-bottle-login
-passlib
-python-slugify
+bottle bottle-login passlib python-slugify gevent-websocket
+
