@@ -1,13 +1,10 @@
 from kollokvie_chat.models import Message, Room, User
 
-import gevent
 import Queue
 from bottle import abort, template, request, redirect, static_file
 from datetime import datetime
 from cgi import escape
 
-from gevent.lock import Semaphore
-from geventwebsocket import WebSocketError
 
 db = None
 

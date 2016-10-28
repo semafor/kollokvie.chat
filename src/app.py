@@ -27,6 +27,7 @@ models.db = db
 
 app.route('/', ['GET'], views.index)
 app.route('/login', ['GET'], views.login)
+app.route('/room/new', )
 app.route('/room/<rid>/<slug>', ['GET'], views.room)
 app.route('/room/<rid>/<slug>/part', ['GET'], views.room_part)
 app.route('/room/<rid>/<slug>/say', ['POST'], views.room_say)
