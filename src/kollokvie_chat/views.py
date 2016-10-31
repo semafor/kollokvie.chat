@@ -199,7 +199,7 @@ def stylesheets(filename):
 
 
 def images(filename):
-    return static_file(filename, root='%s/img' %
+    return static_file(filename, root='%s/images' %
                        request.app.config['STATIC_FOLDER'])
 
 

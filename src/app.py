@@ -41,7 +41,7 @@ app.route('/signup', ['POST'], views.signup_post)
 
 app.route('/<filename:re:.*\.js>', ['GET'], views.javascripts)
 app.route('/<filename:re:.*\.css>', ['GET'], views.stylesheets)
-app.route('/<filename:re:.*\.(jpg|png|gif|ico)>', ['GET'], views.images)
+app.route('/<filename:re:.*\.(jpg|jpeg|png|gif|ico)>', ['GET'], views.images)
 app.route('/<filename:re:.*\.(eot|ttf|woff|svg)>', ['GET'], views.fonts)
 
 if __name__ == '__main__':

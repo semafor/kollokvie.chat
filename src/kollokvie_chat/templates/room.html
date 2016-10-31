@@ -1,18 +1,47 @@
 % rebase('base.html', title='View room')
 
-<h1>{{room.name}}</h1>
+<div class="header">
+    <h1>{{room.name}}</h1>
+</div>
 
-<ul class="messages" id="message_list">
-  % for message in messages:
-    <li data-msg-id="{{message.get_id()}}"><span class="user">{{message.get_owner().name}}</span>: <span class="message">{{message.content}}</span></li>
-  % end
-</ul>
+<div class="sidebar">
+    <ul class="channellist">
+        % for r in rooms:
+        <li><a href="{{r.get_url()}}">{{r.name}}</a></li>
+        % end
+    </ul>
+</div>
 
+<div class="main">
 
-<form id="message_form" action="/room/{{room.get_id()}}/{{room.slug}}/say" method="POST">
-    <input id="message_input" type="text" placeholder="Say something…" name="message">
-    <button for="message_form">Enter</button>
-</form>
+    <ul class="messages" id="message_list">
+      % for message in messages:
+        <li data-msg-id="{{message.get_id()}}">
+            % if message.get_owner().avatar:
+                <img class="user-avatar" src="{{message.get_owner().avatar}}">
+            % else:
+                <img class="user-avatar" src="/default.jpeg">
+            % end
+            <p class="user-name">
+                <span class="user-label">{{message.get_owner().name}}</span>
+                <span class="message-date">{{message.date}}</span>
+            </p>
+            <span class="messagecontent">{{message.content}}</span>
+        </li>
+      % end
+    </ul>
+
+</div>
+
+<div class="footer">
+    <div class ="editor">
+        <form id="message_form" action="/room/{{room.get_id()}}/{{room.slug}}/say" method="POST">
+            <input class="messageinput" id="message_input" type="text" placeholder="Say something…" name="message">
+            <button class="messagebutton" for="message_form">Enter</button>
+        </form>
+    </div>
+</div>
+
 
 <script type="text/javascript">
 

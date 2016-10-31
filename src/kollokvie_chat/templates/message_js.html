@@ -1,3 +1,12 @@
 <li data-msg-id="{{message.get_id()}}" data-client-id="{{message.client_id}}">
-    <span class="user">{{message.get_owner().name}}</span>: <span class="message">{{message.content}}</span>
+    % if message.get_owner().avatar:
+        <img class="user-avatar" src="{{message.get_owner().avatar}}">
+    % else:
+        <img class="user-avatar" src="/default.jpeg">
+    % end
+    <p class="user-name">
+        <span class="user-label">{{message.get_owner().name}}</span>
+        <span class="message-date">{{message.date}}</span>
+    </p>
+    <span class="messagecontent">{{message.content}}</span>
 </li>
