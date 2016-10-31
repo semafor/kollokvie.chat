@@ -1,16 +1,6 @@
-<!doctype html>
-<html>
-<head>
-<meta  charset="utf-8">
-<title>SignUpPage</title>
-
-<link rel="signUp.css">
-
 % rebase('base.html', title='Sign up')
 % setdefault('name', '')
 % setdefault('email', '')
-</head>
-
 
 % if defined('errors'):
 <ul class="errors">
@@ -36,5 +26,3 @@
         <button type="submit" class="pure-button pure-button-primary">Sign up</button>
     </fieldset>
 </form>
-</body>
-</html>
