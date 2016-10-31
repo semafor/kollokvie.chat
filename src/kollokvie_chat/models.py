@@ -288,7 +288,7 @@ class Room(Base):
         INSERT INTO rooms (
             name, slug, topic, date_created_utc, deleted, language
         )
-        VALUES (:name, :topic, :slug, :date_created, :deleted, :language)
+        VALUES (:name, :slug, :topic, :date_created, :deleted, :language)
     '''  # noqa
 
     SQL_GET = '''
@@ -394,5 +394,23 @@ class Room(Base):
                 WHERE room_messages.room_id=:id ORDER BY %s %s
             ''' % (order_by, order),
                 {'id': self.get_id()}):
+            ret.append(Message.from_row(row))
+        return ret
+
+    def get_messages_from(self, msg_id, order_by='date_utc', order='ASC'):
+        ret = []
+        for row in db.cursor().execute(
+            '''
+                SELECT mid, content, date_utc as date, room_id, message_id
+                FROM room_messages INNER JOIN
+                messages ON room_messages.message_id=messages.mid
+                WHERE room_messages.room_id=:id AND mid > :from_mid
+                ORDER BY %s %s
+            ''' % (order_by, order),
+            {
+                'id': self.get_id(),
+                'from_mid': msg_id,
+            }
+        ):
             ret.append(Message.from_row(row))
         return ret

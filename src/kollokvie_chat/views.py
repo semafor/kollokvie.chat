@@ -5,7 +5,6 @@ from bottle import abort, template, request, redirect, static_file
 from datetime import datetime
 from cgi import escape
 
-
 db = None
 
 message_queue = Queue.Queue()
@@ -20,7 +19,7 @@ def get_login_plugin(request):
 
 
 def render(tpl, **kwargs):
-    kwargs['template_lookup'] = ['src/kollokvie_chat/templates/']
+    kwargs['template_lookup'] = [request.app.config['TMPL_FOLDER']]
     return template(tpl, **kwargs)
 
 
@@ -67,7 +66,7 @@ def index():
         return redirect('/login')
 
     return template('index',
-                    template_lookup=['src/kollokvie_chat/templates/'],
+                    template_lookup=[request.app.config['TMPL_FOLDER']],
                     name=user.name,
                     rooms=Room.get_all(order_by='name'))
 
@@ -78,7 +77,8 @@ def logout():
 
 
 def login():
-    return template('login', template_lookup=['src/kollokvie_chat/templates/'])
+    return template('login',
+                    template_lookup=[request.app.config['TMPL_FOLDER']])
 
 
 def do_login():
@@ -89,7 +89,7 @@ def do_login():
     if user is None or not user.compare_password(pwd):
         return template('login', errors=[
             'We found no account for the given credentials.'
-        ], template_lookup=['src/kollokvie_chat/templates/'],
+        ], template_lookup=[request.app.config['TMPL_FOLDER']],
             email=email)
 
     get_login_plugin(request).login_user(email)
@@ -109,20 +109,15 @@ def room(rid=None, slug=None):
     room = Room.get(rid)
     room.add(user)
     return template(
-        'room', template_lookup=['src/kollokvie_chat/templates/'],
+        'room', template_lookup=[request.app.config['TMPL_FOLDER']],
         room=room, rooms=Room.get_all(order_by='name'), user=user,
         messages=room.get_messages(),
-        socket='%s:%d/socket/%s/%s' % (
-            request.app.config['HOST'],
-            request.app.config['PORT'],
-            room.get_id(), room.slug
-        )
     )
 
 
 def room_part(rid=None, slug=None):
-    if slug is None:
-        return redirect('/')
+    if slug is None or rid is None:
+        abort(404, "Room not found.")
 
     user = get_login_plugin(request).get_user()
 
@@ -136,9 +131,8 @@ def room_part(rid=None, slug=None):
 
 
 def room_say(rid=None, slug=None):
-
     if slug is None or rid is None:
-        return redirect('/')
+        abort(404, "Room not found.")
 
     user = get_login_plugin(request).get_user()
 
@@ -153,6 +147,9 @@ def room_say(rid=None, slug=None):
     msg.save()
 
     room = Room.get(rid)
+    if slug != room.slug:
+        abort(404, "Room not found.")
+
     room.add(msg)
     user.add(msg)
 
@@ -166,11 +163,29 @@ def room_say(rid=None, slug=None):
 
     if from_js:
         return template(
-            'message_js', template_lookup=['src/kollokvie_chat/templates/'],
+            'message_js', template_lookup=[request.app.config['TMPL_FOLDER']],
             message=msg
         )
     else:
         return redirect(room.get_url())
+
+
+def messages_from(rid=None, slug=None, msg_id=None):
+    if slug is None or rid is None:
+        abort(404, "Room not found.")
+
+    user = get_login_plugin(request).get_user()
+    if user is None:
+        return redirect('/')
+
+    room = Room.get(rid)
+    if slug != room.slug:
+        abort(404, "Room not found.")
+
+    return template(
+        'messages_js', template_lookup=[request.app.config['TMPL_FOLDER']],
+        messages=room.get_messages_from(msg_id)
+    )
 
 
 def javascripts(filename):
@@ -191,45 +206,3 @@ def images(filename):
 def fonts(filename):
     return static_file(filename, root='%s/fonts' %
                        request.app.config['STATIC_FOLDER'])
-
-
-def socket(rid=None, slug=None):
-    pass
-    # if slug is None or rid is None:
-    #     return
-
-    # sem = Semaphore()
-
-    # wsock = request.environ.get('wsgi.websocket')
-    # if not wsock:
-    #     abort(400, 'Expected WebSocket request.')
-
-    # def wait(ws, _sem):
-
-    #     while True:
-    #         try:
-    #             msg = message_queue.get_nowait()
-
-    #             user = msg.get_owner()
-    #             print('websocket saw', msg.content, 'from user', user.name)
-
-    #             if user is not None:
-
-    #                 ws.send(
-    #                     template(
-    #                         '''
-    #                         <li data-client-id="{{message.client_id}}">
-    #                             <span class="user">{{message.get_owner().name}}</span>: <span class="message">{{message.content}}</span>
-    #                         </li>
-    #                         ''',  # noqa
-    #                         message=msg
-    #                     )
-    #                 )
-
-    #             message_queue.task_done()
-    #         except Queue.Empty:
-    #             pass
-
-    #         gevent.sleep(0)
-
-    # gevent.spawn(wait, wsock, sem)

@@ -304,6 +304,23 @@ class TestRooms(BaseTestCase):
     # def test_update_room(self):
     #     pass
 
+    def test_get_messages_from(self):
+        room = create_test_room()
+        room.save()
+
+        message1 = create_test_message()
+        message1.content = 'first'
+        message1.save()
+        message2 = create_test_message()
+        message2.content = 'second'
+        message2.save()
+        room.add(message1)
+        room.add(message2)
+
+        messages = room.get_messages_from(1)
+        self.assertEqual(len(messages), 1)
+        self.assertEqual(messages[0].content, 'second')
+
 
 class TestAttachments(BaseTestCase):
 
