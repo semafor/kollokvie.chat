@@ -73,13 +73,19 @@ function poller() {
     var lastMsgId = get_last_msg_id();
 
     var oReq = new XMLHttpRequest();
+    oReq.onreadystatechange = function (e) {
+        if (oReq.readyState == 4) {
+            console.log('status', oReq.status)
+        }
+    }
     oReq.addEventListener("load", handlePollresponse);
     oReq.open("GET", "{{room.get_url()}}/messages/from/" + lastMsgId);
     oReq.send();
 }
 
 function handlePollresponse() {
-      message_list.insertAdjacentHTML('beforeend', this.responseText);
+    console.log(this.status)
+    message_list.insertAdjacentHTML('beforeend', this.responseText);
 }
 
 function get_last_msg_id() {

@@ -53,7 +53,7 @@ def signup_post():
         return signup_error(errors)
     else:
         get_login_plugin(request).login_user(email)
-        return redirect('/')
+        redirect('/')
 
 
 def signup_error(errors, **kwargs):
@@ -63,7 +63,7 @@ def signup_error(errors, **kwargs):
 def index():
     user = get_login_plugin(request).get_user()
     if user is None:
-        return redirect('/login')
+        redirect('/login')
 
     return template('index',
                     template_lookup=[request.app.config['TMPL_FOLDER']],
@@ -73,7 +73,7 @@ def index():
 
 def logout():
     get_login_plugin(request).logout_user()
-    return redirect('/')
+    redirect('/')
 
 
 def login():
@@ -93,18 +93,18 @@ def do_login():
             email=email)
 
     get_login_plugin(request).login_user(email)
-    return redirect('/')
+    redirect('/')
 
 
 def room(rid=None, slug=None):
     if slug is None:
-        return redirect('/')
+        redirect('/')
 
     user = get_login_plugin(request).get_user()
 
     # TODO: replace with decorator
     if user is None:
-        return redirect('/')
+        redirect('/')
 
     room = Room.get(rid)
     room.add(user)
@@ -123,11 +123,11 @@ def room_part(rid=None, slug=None):
 
     # TODO: replace with decorator
     if user is None:
-        return redirect('/')
+        redirect('/')
 
     room = Room.get(rid)
     room.remove(user)
-    return redirect('/')
+    redirect('/')
 
 
 def room_say(rid=None, slug=None):
@@ -138,7 +138,7 @@ def room_say(rid=None, slug=None):
 
     # TODO: replace with decorator
     if user is None:
-        return redirect('/')
+        redirect('/')
 
     message = request.forms.get('message')
     msg = Message()
@@ -167,7 +167,7 @@ def room_say(rid=None, slug=None):
             message=msg
         )
     else:
-        return redirect(room.get_url())
+        redirect(room.get_url())
 
 
 def messages_from(rid=None, slug=None, msg_id=None):
@@ -176,7 +176,7 @@ def messages_from(rid=None, slug=None, msg_id=None):
 
     user = get_login_plugin(request).get_user()
     if user is None:
-        return redirect('/')
+        redirect('/')
 
     room = Room.get(rid)
     if slug != room.slug:
