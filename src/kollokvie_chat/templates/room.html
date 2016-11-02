@@ -12,7 +12,7 @@
     </ul>
 </div>
 
-<div class="main">
+<div id="chat-box" class="main">
 
     <ul class="messages" id="message_list">
       % for message in messages:
@@ -97,8 +97,7 @@ function get_last_msg_id() {
     }
 }
 
-function makeid()
-{
+function makeid() {
     var text = "";
     var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
@@ -108,5 +107,15 @@ function makeid()
     return text;
 }
 
+function scrollToBottom() {
+    var chatbox = document.getElementById("chat-box");
+    chatbox.scrollTop = chatbox.scrollHeight;
+}
+
 window.setInterval(poller, 500);
+
+window.onload = function () {
+    console.log('load');
+    scrollToBottom();
+}
 </script>

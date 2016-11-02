@@ -1,18 +1,5 @@
-* {
-
-	margin: 0;
-	padding: 0;
+.login-form {
+    width: 300px;
+    margin: auto;
 }
 
-body {
-
-	font-family: "verdana", sans-serif;
-	
-}
-
-.pure-formpure-form-stacked label{
-
-	position: absolute;
-	width: 80%;
-
-}
