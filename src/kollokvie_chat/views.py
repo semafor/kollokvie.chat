@@ -1,13 +1,9 @@
 from kollokvie_chat.models import Message, Room, User
-import Queue
 from bottle import abort, template, request, redirect, static_file
 from datetime import datetime
 from cgi import escape
 
 db = None
-
-
-
 
 
 def get_login_plugin(request):
@@ -158,8 +154,6 @@ def room_say(rid=None, slug=None):
     if client_id:
         msg.client_id = client_id
         from_js = True
-
-    message_queue.put(msg)
 
     if from_js:
         return template(
