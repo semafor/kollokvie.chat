@@ -12,15 +12,18 @@ body {
     left: 20%;
     border-bottom: 1px solid #ccc;
 }
+
 .header h1 {
     margin: 0 20px;
     line-height: 50px;
     font-weight: normal;
     font-size: 22px;
 }
+
 .header h1:before {
     content: "#";
 }
+
 .sidebar {
     width: 20%;
     position:absolute;
@@ -30,16 +33,19 @@ body {
     background: #0D4378;
 
 }
+
 .channellist {
     margin: 50px;
     list-style: none;
     font-size: 20px;
 
 }
+
 .channellist a {
     color: white;
     text-decoration: none;
 }
+
 .main {
     position:absolute;
     top: 60px;
@@ -49,12 +55,14 @@ body {
     background: white;
     overflow-y: scroll;
  }
+
  .user-avatar {
     width: 30px;
     display: block;
     float: left;
     padding: 5px 10px;
 }
+
 .user-label {
     font-weight: bold;
 }
@@ -62,6 +70,7 @@ body {
 .user-name {
     display: block;
 }
+
 .messages li {
     margin-bottom: 15px;
 }
@@ -70,6 +79,7 @@ body {
     list-style: none;
     margin-right: 20px;
 }
+
 .message-date {
     color: gray;
 }
@@ -78,6 +88,7 @@ body {
     margin-left: 50px;
     display: block;
 }
+
 .footer {
     background: white;
     position:absolute;
@@ -91,6 +102,7 @@ body {
 .editor {
     margin: 15px;
 }
+
 .messagebutton{
 }
 
