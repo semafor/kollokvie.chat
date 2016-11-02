@@ -1,5 +1,4 @@
 from kollokvie_chat.models import Message, Room, User
-
 import Queue
 from bottle import abort, template, request, redirect, static_file
 from datetime import datetime
@@ -7,7 +6,8 @@ from cgi import escape
 
 db = None
 
-message_queue = Queue.Queue()
+
+
 
 
 def get_login_plugin(request):
