@@ -46,8 +46,9 @@ CREATE_ROOMS = '''
 CREATE TABLE IF NOT EXISTS rooms
 (
     rid INTEGER PRIMARY KEY,
-    name text NOT NULL,
+    name text UNIQUE NOT NULL,
     slug text UNIQUE NOT NULL,
+    display_name text,
     topic text,
     date_created_utc text,
     deleted number,

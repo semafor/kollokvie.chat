@@ -138,6 +138,38 @@ class TestUsers(BaseTestCase):
         self.assertEqual(users[0].email, user1.email)
         self.assertEqual(users[1].email, user2.email)
 
+    def test_user_does_not_see_room_not_visited(self):
+        user = create_test_user()
+        user.save()
+        room = create_test_room()
+        room.save()
+
+        self.assertEqual([], user.get_rooms())
+
+    def test_user_sees_rooms_visited(self):
+        user = create_test_user()
+        user.save()
+        room = create_test_room()
+        room.save()
+        room.add(user)
+        rooms = user.get_rooms()
+        self.assertEqual(1, len(rooms))
+        self.assertEqual(rooms[0].name, room.name)
+
+    def test_user_in_room(self):
+        user = create_test_user()
+        user.save()
+        room1 = create_test_room()
+        room1.save()
+        room1.add(user)
+        room2 = create_test_room()
+        room2.name = "foo"
+        room2.slug = room2.name
+        room2.save()
+
+        self.assertTrue(user.in_room(room1))
+        self.assertFalse(user.in_room(room2))
+
 
 class TestMessages(BaseTestCase):
 
@@ -320,6 +352,32 @@ class TestRooms(BaseTestCase):
         messages = room.get_messages_from(1)
         self.assertEqual(len(messages), 1)
         self.assertEqual(messages[0].content, 'second')
+
+    def test_get_by_name(self):
+        room = create_test_room()
+        room.save()
+
+        r = models.Room.get_by_name(room.name)
+        self.assertIsNotNone(r)
+        self.assertEqual(room.name, r.name)
+
+        self.assertIsNone(models.Room.get_by_name("not exist"))
+
+    def test_contains_user(self):
+        room = create_test_room()
+        room.save()
+
+        user1 = create_test_user()
+        user1.email = 'aaa@example.org'
+        user1.save()
+        room.add(user1)
+
+        user2 = create_test_user()
+        user2.email = 'bbb@example.org'
+        user2.save()
+
+        self.assertTrue(room.contains_user(user1))
+        self.assertFalse(room.contains_user(user2))
 
 
 class TestAttachments(BaseTestCase):

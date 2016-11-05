@@ -1,0 +1,28 @@
+% rebase('base.html', title='Create new room')
+
+<div class="form-box">
+
+% if defined('errors'):
+<ul class="errors">
+  % for error in errors:
+    <li>{{error}}</li>
+  % end
+</ul>
+% end
+
+<form class="pure-form pure-form-stacked create-room-form" action="/room/new" method="post">
+    <fieldset>
+        <legend>Create new room</legend>
+
+        <label for="name">Room name</label>
+        <input name="name" id="name" type="text" placeholder="Cafe INFO212" value="">
+
+        <button type="submit" class="pure-button pure-button-primary">Create</button>
+    </fieldset>
+</form>
+
+<div class="alternate-action">
+<p><a class="pure-button" href="/">← Cancel</a></p>
+</div>
+
+</div>

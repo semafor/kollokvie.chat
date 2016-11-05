@@ -5,11 +5,14 @@
 </div>
 
 <div class="sidebar">
+    % if len(rooms) > 0:
+    <h2>Your channels:</h2>
     <ul class="channellist">
         % for r in rooms:
         <li><a href="{{r.get_url()}}">{{r.name}}</a></li>
         % end
     </ul>
+    % end
 </div>
 
 <div id="chat-box" class="main">

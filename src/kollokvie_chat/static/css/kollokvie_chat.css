@@ -3,8 +3,13 @@
     margin: 0;
 }
 
+@font-face {
+    font-family: "Kollokvie.chat";
+    src: url(SanFranciscoText-Regular.otf) format("opentype");
+}
 body {
-	font-family: verdana, "sans-serif";
+    font-family: "Kollokvie.chat", verdana, "sans-serif";
+    font-size: 16px;
 }
 .header {
     position: absolute;
@@ -32,19 +37,39 @@ body {
     top: 0px;
     bottom: 0px;
     background: #0D4378;
+    padding: 20px;
+    box-sizing: border-box;
+}
 
+.sidebar a {
+
+}
+
+.sidebar h2 {
+    font-size: 10px;
+    color: rgba(255,255,255,0.5);
+    font-style: normal;
+    text-transform: uppercase;
+    letter-spacing: -0.5px;
+}
+
+.create-new-room {
+    text-align: center;
 }
 
 .channellist {
-    margin: 50px;
+    margin: 0 0 10px;
     list-style: none;
-    font-size: 20px;
-
 }
 
 .channellist a {
-    color: white;
+    color: rgba(255,255,255,0.75);
     text-decoration: none;
+}
+
+.channellist a:before {
+    content: "#";
+    color: rgba(255,255,255,0.25);
 }
 
 .main {
@@ -113,4 +138,27 @@ body {
     height: 45px;
     width: 80%;
     display: inline-block;
+}
+
+.errors {
+    list-style: none;
+}
+
+.errors li {
+    color: darkred;
+    padding: 0 0 0 15px;
+    position: relative;
+    margin: 1em 0;
+}
+
+.errors li:before {
+    width: 7px;
+    height: 7px;
+    background-color: darkred;
+    display: block;
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 6px;
+    border-radius: 100px;
 }

@@ -7,6 +7,7 @@ db = None
 
 
 def get_login_plugin(request):
+    '''Returns login plugin from a request.'''
     for plugin in request.app.plugins:
         # Not very pythonic
         if "get_user" in dir(plugin):
@@ -15,16 +16,19 @@ def get_login_plugin(request):
 
 
 def render(tpl, **kwargs):
+    '''Renders a template.'''
     kwargs['template_lookup'] = [request.app.config['TMPL_FOLDER']]
     return template(tpl, **kwargs)
 
 
 def signup_get():
+    '''Handler for /signup.'''
     # user = get_login_plugin(request).get_user()
     return render('signup_not_logged_in')
 
 
 def signup_post():
+    '''Handler for /signup when used submitted the form.'''
     name = request.forms.get('name')
     email = request.forms.get('email')
     password = request.forms.get('password')
@@ -53,10 +57,12 @@ def signup_post():
 
 
 def signup_error(errors, **kwargs):
+    '''Handler for /signup when an erroneous form was submitted.'''
     return render('signup_not_logged_in', errors=errors, **kwargs)
 
 
 def index():
+    '''Handler for /. Either the room selector or a specific room (todo).'''
     user = get_login_plugin(request).get_user()
     if user is None:
         redirect('/login')
@@ -64,20 +70,23 @@ def index():
     return template('index',
                     template_lookup=[request.app.config['TMPL_FOLDER']],
                     name=user.name,
-                    rooms=Room.get_all(order_by='name'))
+                    rooms=user.get_rooms())
 
 
 def logout():
+    '''Handler for /logout.'''
     get_login_plugin(request).logout_user()
     redirect('/')
 
 
 def login():
+    '''Handler for /login.'''
     return template('login',
                     template_lookup=[request.app.config['TMPL_FOLDER']])
 
 
 def do_login():
+    '''Handler for /login when user submitted a form.'''
     email = str(request.POST.get('email'))
     pwd = str(request.POST.get('password'))
     user = User.get(email)
@@ -93,6 +102,7 @@ def do_login():
 
 
 def room(rid=None, slug=None):
+    '''Handler for /room/id/slug.'''
     if slug is None:
         redirect('/')
 
@@ -103,7 +113,10 @@ def room(rid=None, slug=None):
         redirect('/')
 
     room = Room.get(rid)
-    room.add(user)
+
+    if not room.contains_user(user):
+        room.add(user)
+
     return template(
         'room', template_lookup=[request.app.config['TMPL_FOLDER']],
         room=room, rooms=Room.get_all(order_by='name'), user=user,
@@ -112,6 +125,7 @@ def room(rid=None, slug=None):
 
 
 def room_part(rid=None, slug=None):
+    '''Handler for when user exits /room/id/slug.'''
     if slug is None or rid is None:
         abort(404, "Room not found.")
 
@@ -127,6 +141,7 @@ def room_part(rid=None, slug=None):
 
 
 def room_say(rid=None, slug=None):
+    '''Handler for when user speaks to /room/id/slug.'''
     if slug is None or rid is None:
         abort(404, "Room not found.")
 
@@ -165,6 +180,7 @@ def room_say(rid=None, slug=None):
 
 
 def messages_from(rid=None, slug=None, msg_id=None):
+    '''Handler for when user polls for messages.'''
     if slug is None or rid is None:
         abort(404, "Room not found.")
 
@@ -180,6 +196,38 @@ def messages_from(rid=None, slug=None, msg_id=None):
         'messages_js', template_lookup=[request.app.config['TMPL_FOLDER']],
         messages=room.get_messages_from(msg_id)
     )
+
+
+def room_new():
+    '''Handler for when user wants to create a new room.'''
+    return render('room_new')
+
+
+def room_new_do():
+    '''Handler for when user wants to create a new room.'''
+    name = request.forms.get('name')
+
+    if name is None or name is '':
+        errors = ['Please enter a room name.']
+        return render('room_new', errors=errors)
+
+    user = get_login_plugin(request).get_user()
+    if user is None:
+        redirect('/')
+
+    room = Room.get_by_name(name)
+    if room is not None:
+        errors = ['Room already exist, please enter a different name.']
+        return render('room_new', errors=errors)
+
+    room = Room()
+    room.name = name
+    room.slug = name
+    room.display_name = name
+    room.topic = 'Welcome to %s' % name
+    room.save()
+
+    redirect(room.get_url())
 
 
 def javascripts(filename):
@@ -198,5 +246,6 @@ def images(filename):
 
 
 def fonts(filename):
+    print("font req", filename)
     return static_file(filename, root='%s/fonts' %
                        request.app.config['STATIC_FOLDER'])

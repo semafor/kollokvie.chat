@@ -175,6 +175,25 @@ class User(Base):
             }
         self.execute(sql, args)
 
+    def get_rooms(self):
+        db.cursor().execute('''
+            SELECT user_id, room_id
+            FROM user_rooms INNER JOIN
+            rooms ON user_rooms.room_id=rooms.rid WHERE user_rooms.user_id=:id
+        ''', {'id': self.get_id()})  # noqa
+        rows = db.cursor().fetchall()
+        rooms = []
+        for row in rows:
+            rooms.append(Room.get(row['room_id']))
+        return rooms
+
+    def in_room(self, room):
+        rooms = self.get_rooms()
+        for r in rooms:
+            if room.get_id() == r.get_id():
+                return True
+        return False
+
 
 class Message(Base):
 
@@ -286,18 +305,18 @@ class Room(Base):
 
     SQL_INSERT = '''
         INSERT INTO rooms (
-            name, slug, topic, date_created_utc, deleted, language
+            name, slug, display_name, topic, date_created_utc, deleted, language
         )
-        VALUES (:name, :slug, :topic, :date_created, :deleted, :language)
+        VALUES (:name, :slug, :display_name, :topic, :date_created, :deleted, :language)
     '''  # noqa
 
     SQL_GET = '''
-        SELECT rid, name, slug, topic, date_created_utc, deleted, language
+        SELECT rid, name, slug, display_name, topic, date_created_utc, deleted, language
         FROM rooms WHERE rid=:id
-    '''
+    '''  # noqa
 
     SQL_GET_ALL = '''
-        SELECT rid, name, slug, topic, date_created_utc, deleted, language FROM rooms
+        SELECT rid, name, slug, display_name, topic, date_created_utc, deleted, language FROM rooms
         ORDER BY %s %s
     '''  # noqa
 
@@ -307,6 +326,7 @@ class Room(Base):
         room.id = row['rid']
         room.name = row['name']
         room.slug = row['slug']
+        room.display_name = row['display_name']
         room.topic = row['topic']
         room.date_created = row['date_created_utc']
         room.deleted = row['deleted']
@@ -325,6 +345,11 @@ class Room(Base):
             self.topic = ''
 
         try:
+            self.display_name
+        except AttributeError:
+            self.display_name = ''
+
+        try:
             self.deleted
         except AttributeError:
             self.deleted = False
@@ -337,6 +362,7 @@ class Room(Base):
         return {
             'name': self.name,
             'slug': slugify(self.slug),
+            'display_name': self.display_name,
             'topic': self.topic,
             'date_created': self.date_created,
             'deleted': int(self.deleted),
@@ -414,3 +440,21 @@ class Room(Base):
         ):
             ret.append(Message.from_row(row))
         return ret
+
+    @classmethod
+    def get_by_name(cls, name):
+        db.cursor().execute(
+            '''
+            SELECT rid FROM rooms WHERE name=:name
+            ''', {'name': name})
+        res = db.cursor().fetchone()
+        if res is None:
+            return None
+        return cls.get(res['rid'])
+
+    def contains_user(self, user):
+        rooms = user.get_rooms()
+        for r in rooms:
+            if self.get_id() == r.get_id():
+                return True
+        return False

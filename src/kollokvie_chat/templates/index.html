@@ -1,11 +1,17 @@
 % rebase('base.html', title='Hello')
 
-<p>Hi {{name}}.</p>
+<div class="sidebar">
+    % if len(rooms) > 0:
+    <h2>Channels:</h2>
+    <ul class="channellist">
+        % for r in rooms:
+        <li><a href="{{r.get_url()}}">{{r.name}}</a></li>
+        % end
+    </ul>
+    % end
 
-<ul class="rooms">
-  % for room in rooms:
-    <li><a href="/room/{{room.get_id()}}/{{room.slug}}">{{room.name}}</a></li>
-  % end
-</ul>
+    <p class="create-new-room"><a class="pure-button button-xsmall" href="/room/new">Create new room</a></p>
+</div>
 
-or enter new room <input type="text"> 
+
+

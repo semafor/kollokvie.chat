@@ -1,9 +1,7 @@
 % rebase('base.html', title='Log in')
 % setdefault('email', '')
 
-<style type="text/css">
-.errors li { color: "red"; }
-</style>
+<div class="form-box">
 
 % if defined('errors'):
 <ul class="errors">
@@ -26,3 +24,9 @@
         <button type="submit" class="pure-button pure-button-primary">Log in</button>
     </fieldset>
 </form>
+
+<div class="alternate-action">
+<p>New to Kollokvie.chat? <a class="pure-button" href="/signup">Sign up</a></p>
+</div>
+
+</div>

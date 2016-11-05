@@ -28,7 +28,8 @@ models.db = db
 
 app.route('/', ['GET'], views.index)
 app.route('/login', ['GET'], views.login)
-app.route('/room/new', )
+app.route('/room/new', ['GET'], views.room_new)
+app.route('/room/new', ['POST'], views.room_new_do)
 app.route('/room/<rid>/<slug>', ['GET'], views.room)
 app.route('/room/<rid>/<slug>/part', ['GET'], views.room_part)
 app.route('/room/<rid>/<slug>/say', ['POST'], views.room_say)
@@ -42,7 +43,7 @@ app.route('/signup', ['POST'], views.signup_post)
 app.route('/<filename:re:.*\.js>', ['GET'], views.javascripts)
 app.route('/<filename:re:.*\.css>', ['GET'], views.stylesheets)
 app.route('/<filename:re:.*\.(jpg|jpeg|png|gif|ico)>', ['GET'], views.images)
-app.route('/<filename:re:.*\.(eot|ttf|woff|svg)>', ['GET'], views.fonts)
+app.route('/<filename:re:.*\.(eot|ttf|woff|svg|otf)>', ['GET'], views.fonts)
 
 if __name__ == '__main__':
     run(app, host=app.config['HOST'], port=app.config['PORT'], debug=True,

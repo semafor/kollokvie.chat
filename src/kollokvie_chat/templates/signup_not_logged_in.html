@@ -2,6 +2,8 @@
 % setdefault('name', '')
 % setdefault('email', '')
 
+<div class="form-box">
+
 % if defined('errors'):
 <ul class="errors">
   % for error in errors:
@@ -9,7 +11,7 @@
   % end
 </ul>
 % end
-<body>
+
 <form class="pure-form pure-form-stacked" action="/signup" method="post">
     <fieldset>
         <legend>Sign up for Kollokvie.chat</legend>
@@ -26,3 +28,9 @@
         <button type="submit" class="pure-button pure-button-primary">Sign up</button>
     </fieldset>
 </form>
+
+<div class="alternate-action">
+<p>Already got an account? <a class="pure-button" href="/login">Log in</a></p>
+</div>
+
+</div>

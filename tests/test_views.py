@@ -208,3 +208,34 @@ class TestRoom(BaseLoggedInCase):
         out = views.messages_from(room.get_id(), room.slug, 1)
         self.assertIn(message2.content, out)
         self.assertNotIn(message1.content, out)
+
+    def test_new_room(self):
+        out = views.room_new()
+        self.assertIn('Create new room', out)
+
+    def test_new_room_creation(self):
+        vals = {'name': 'some room'}
+        self.forms.set(vals)
+
+        # raises redirect to new room
+        with self.assertRaises(HTTPResponse):
+            views.room_new_do()
+
+        room = models.Room.get_by_name('some room')
+        self.assertEqual(room.name, vals['name'])
+
+    def test_new_empty_room_creation(self):
+        vals = {'name': ''}
+        self.forms.set(vals)
+        out = views.room_new_do()
+        self.assertIn('Please enter a room name', out)
+
+    def test_new_duplicate_room_creation(self):
+        room = models.Room()
+        room.name = 'some room'
+        room.slug = 'slug'
+        room.save()
+        vals = {'name': 'some room'}
+        self.forms.set(vals)
+        out = views.room_new_do()
+        self.assertIn('already exist', out)
