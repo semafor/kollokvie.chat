@@ -1,5 +1,6 @@
 from kollokvie_chat.models import Message, Room, User
-from bottle import abort, template, request, redirect, static_file
+from bottle import (abort, template, request, redirect, static_file,
+                    response)
 from datetime import datetime
 from cgi import escape
 
@@ -192,9 +193,11 @@ def messages_from(rid=None, slug=None, msg_id=None):
     if slug != room.slug:
         abort(404, "Room not found.")
 
+    messages = room.get_messages_from(msg_id)
+    response.set_header('messages', len(messages))
     return template(
         'messages_js', template_lookup=[request.app.config['TMPL_FOLDER']],
-        messages=room.get_messages_from(msg_id)
+        messages=messages
     )
 
 
@@ -246,6 +249,5 @@ def images(filename):
 
 
 def fonts(filename):
-    print("font req", filename)
     return static_file(filename, root='%s/fonts' %
                        request.app.config['STATIC_FOLDER'])
