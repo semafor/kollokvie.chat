@@ -1,5 +1,4 @@
 
-
 function poller(url) {
     var oReq = new XMLHttpRequest();
     oReq.addEventListener("load", handlePollresponse);
