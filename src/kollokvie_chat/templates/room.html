@@ -62,7 +62,7 @@ form.addEventListener('submit', function (e) {
     var data = new FormData(form);
 
     // No message entered, ignoring.
-    if (message_input.value) {
+    if (!message_input.value) {
         return;
     }
 
