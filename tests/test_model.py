@@ -223,6 +223,28 @@ class TestMessages(BaseTestCase):
         owner = message.get_owner()
         self.assertEqual(user.get_id(), owner.get_id())
 
+    def test_long_redable_date(self):
+        message = create_test_message()
+        message.save()
+
+        message1 = models.Message.get(message.get_id())
+        self.assertTrue(type(message1.date) is datetime.datetime)
+        self.assertEqual(message1.human_readable_date(),
+                         'Wed 3. Dec, 2007 12:30:00')
+
+    def test_short_redable_date(self):
+        message = create_test_message()
+        now = datetime.datetime.now()
+        message.date = datetime.datetime(
+            now.year, now.month, now.day, hour=12, minute=30, second=0)
+
+        message.save()
+
+        message1 = models.Message.get(message.get_id())
+        self.assertTrue(type(message1.date) is datetime.datetime)
+        self.assertEqual(message1.human_readable_date(),
+                         '12:30')
+
 
 class TestRooms(BaseTestCase):
 

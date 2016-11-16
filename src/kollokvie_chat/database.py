@@ -26,7 +26,7 @@ CREATE_MESSAGES = '''
 CREATE TABLE IF NOT EXISTS messages
 (
     mid INTEGER PRIMARY KEY,
-    date_utc text,
+    date_utc timestamp,
     content text
 )
 '''
@@ -97,7 +97,8 @@ class Database(object):
         self._path = path
 
     def initialize(self):
-        self._conn = sqlite3.connect(self._path)
+        self._conn = sqlite3.connect(self._path,
+                                     detect_types=sqlite3.PARSE_DECLTYPES)
         self._conn.row_factory = sqlite3.Row
         self._conn.text_factory = str
         self._cursor = self._conn.cursor()

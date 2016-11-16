@@ -27,7 +27,7 @@
             % end
             <p class="user-name">
                 <span class="user-label">{{message.get_owner().name}}</span>
-                <span class="message-date">{{message.date}}</span>
+                <span class="message-date">{{message.human_readable_date()}}</span>
             </p>
             <span class="messagecontent">{{message.content}}</span>
         </li>

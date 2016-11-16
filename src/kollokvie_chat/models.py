@@ -1,6 +1,6 @@
 import sqlite3
+import datetime
 
-from datetime import datetime
 from passlib.hash import sha256_crypt as hasher
 from slugify import slugify
 
@@ -229,7 +229,7 @@ class Message(Base):
         try:
             self.date
         except AttributeError:
-            self.date = datetime.now()
+            self.date = datetime.datetime.now()
 
         return {
             'mid': self.id,
@@ -265,6 +265,12 @@ class Message(Base):
             }
 
         self.execute(sql, args)
+
+    def human_readable_date(self):
+        if self.date > datetime.datetime.today():
+            return self.date.strftime('%H:%M')
+        else:
+            return self.date.strftime('%a %w. %b, %Y %X')
 
 
 class Attachment(Base):
@@ -337,7 +343,7 @@ class Room(Base):
         try:
             self.date_created
         except AttributeError:
-            self.date_created = datetime.now()
+            self.date_created = datetime.datetime.now()
 
         try:
             self.topic
