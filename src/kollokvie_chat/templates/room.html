@@ -60,6 +60,12 @@ form.addEventListener('submit', function (e) {
     e.preventDefault();
 
     var data = new FormData(form);
+
+    // No message entered, ignoring.
+    if (!data.get('message')) {
+        return;
+    }
+
     var cid = makeid();
     data.append('client_id', cid);
     var xhr = new XMLHttpRequest();
