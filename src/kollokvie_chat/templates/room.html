@@ -80,7 +80,7 @@ form.addEventListener('submit', function (e) {
 
 timeoutId = window.setInterval(function () {
     poller("{{room.get_url()}}/messages/from/" + get_last_msg_id());
-}, 500);
+}, 250);
 
 window.onload = function () {
     scrollToBottom();
