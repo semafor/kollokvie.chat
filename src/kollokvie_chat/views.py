@@ -71,7 +71,7 @@ def index():
     return template('index',
                     template_lookup=[request.app.config['TMPL_FOLDER']],
                     name=user.name,
-                    rooms=user.get_rooms())
+                    rooms=Room.get_all(order_by='rid'))
 
 
 def logout():
