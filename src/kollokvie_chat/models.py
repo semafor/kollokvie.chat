@@ -267,7 +267,11 @@ class Message(Base):
         self.execute(sql, args)
 
     def human_readable_date(self):
-        if self.date > datetime.datetime.today():
+        today = datetime.datetime.today()
+        y = today.year
+        m = today.month
+        d = today.day
+        if (self.date.year == y and self.date.month == m and self.date.day == d):  # noqa
             return self.date.strftime('%H:%M')
         else:
             return self.date.strftime('%a %w. %b, %Y %X')
