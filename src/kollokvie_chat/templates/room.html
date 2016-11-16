@@ -39,7 +39,7 @@
 <div class="footer">
     <div class ="editor">
         <form id="message_form" action="/room/{{room.get_id()}}/{{room.slug}}/say" method="POST">
-            <input class="messageinput" id="message_input" type="text" placeholder="Say something…" name="message">
+            <input class="messageinput" id="message_input" type="text" placeholder="Say something…" name="message" autocomplete="off">
             <button class="messagebutton" for="message_form">Enter</button>
         </form>
     </div>
