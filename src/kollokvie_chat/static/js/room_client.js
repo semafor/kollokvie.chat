@@ -1,4 +1,3 @@
-
 function poller(url) {
     var oReq = new XMLHttpRequest();
     oReq.addEventListener("load", handlePollresponse);
@@ -8,17 +7,25 @@ function poller(url) {
 
 function handlePollresponse() {
     var messages = parseInt(this.getResponseHeader("messages"), 10);
+    var chatbox = document.getElementById("chat-box");
     if (isNaN(messages)) {
         throw new Error("no messages");
     } else {
         body.classList.remove('bad-poll-response');
     }
 
-    if (messages > 0) {
-        scrollToBottom();
-    }
+    // Are we scrolled all the way to the bottom? If yes, scroll.
+    var scroll = chatbox.scrollTop == chatbox.scrollTopMax;
 
     message_list.insertAdjacentHTML('beforeend', this.responseText);
+
+    if (messages > 0) {
+        if (scroll) {
+            scrollToBottom();
+        } else {
+            highlightUnread();
+        }
+    }
 }
 
 function get_last_msg_id() {
@@ -43,4 +50,8 @@ function makeid() {
 function scrollToBottom() {
     var chatbox = document.getElementById("chat-box");
     chatbox.scrollTop = chatbox.scrollHeight;
+}
+
+function highlightUnread() {
+    document.body.classList.add('unread');
 }

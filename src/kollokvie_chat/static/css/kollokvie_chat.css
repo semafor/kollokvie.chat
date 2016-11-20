@@ -22,6 +22,8 @@ body {
     left: 16%;
     right: 0;
     border-bottom: 1px solid #ccc;
+    box-shadow:  0 0 25px rgba(0,0,0,0.1);
+    z-index: 2;
 }
 
 .header h1 {
@@ -155,7 +157,7 @@ body {
 
 .main {
     position:absolute;
-    top: 60px;
+    top: 51px;
     bottom: 75px;
     right:0;
     left: 16%;
@@ -329,3 +331,34 @@ body {
         0 0.25em 0 0 white,
         0 0.5em 0 0 white;
 }
+
+
+/*
+    <div class="unread-notice">
+        <p>You have unread messages: <a href="javascript:scrollToBottom()">show</a></p>
+    </div>
+*/
+
+.unread-notice {
+    position: fixed;
+    top: 70px;
+    right: 0;
+    height: 40px;
+    line-height: 40px;
+    background: rgb(52,152,219);
+    z-index: 100;
+    left: 16%;
+    color: white;
+    text-align: center;
+    opacity: 0;
+    transition: opacity .5s;
+}
+
+.unread .unread-notice {
+    opacity: 1;
+}
+
+.unread-notice a {
+    color: inherit;
+}
+

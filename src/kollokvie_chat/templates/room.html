@@ -52,6 +52,12 @@
       % end
     </ul>
 
+    <div class="unread-notice">
+        <p>You have unread messages: <a href="
+            javascript:scrollToBottom(); document.body.classList.remove('unread');
+        ">show</a></p>
+    </div>
+
 </div>
 
 <div class="footer">
@@ -70,6 +76,7 @@
 var message_list = document.getElementById("message_list");
 
 var form = document.getElementById("message_form");
+var chat_box = document.getElementById("chat-box");
 var message_input = document.getElementById("message_input");
 var timeoutId;
 var body = document.getElementsByTagName('body')[0];
@@ -83,6 +90,8 @@ form.addEventListener('submit', function (e) {
     if (!message_input.value) {
         return;
     }
+
+    scrollToBottom();
 
     var cid = makeid();
     data.append('client_id', cid);
@@ -101,7 +110,11 @@ timeoutId = window.setInterval(function () {
 }, 500);
 
 window.onload = function () {
-    scrollToBottom();
+    scrollToBottom(true);
+
+    chat_box.onscroll = function () {
+        document.body.classList.remove('unread');
+    }
 }
 
 window.onerror = function(messageOrEvent) {
