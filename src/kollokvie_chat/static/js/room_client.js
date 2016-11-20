@@ -7,7 +7,6 @@ function poller(url) {
 
 function handlePollresponse() {
     var messages = parseInt(this.getResponseHeader("messages"), 10);
-    var chatbox = document.getElementById("chat-box");
     if (isNaN(messages)) {
         throw new Error("no messages");
     } else {
@@ -15,7 +14,7 @@ function handlePollresponse() {
     }
 
     // Are we scrolled all the way to the bottom? If yes, scroll.
-    var scroll = chatbox.scrollTop == chatbox.scrollTopMax;
+    var scroll = isAtBottomOfChatWindow();
 
     message_list.insertAdjacentHTML('beforeend', this.responseText);
 
@@ -54,4 +53,9 @@ function scrollToBottom() {
 
 function highlightUnread() {
     document.body.classList.add('unread');
+}
+
+function isAtBottomOfChatWindow() {
+    var chatbox = document.getElementById("chat-box");
+    return (chatbox.scrollTop + chatbox.clientHeight) == chatbox.scrollHeight;
 }
