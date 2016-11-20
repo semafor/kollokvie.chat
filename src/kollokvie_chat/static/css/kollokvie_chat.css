@@ -9,13 +9,18 @@
 }
 body {
     font-family: "Kollokvie.chat", verdana, "sans-serif";
-    font-size: 16px;
+    font-size: 19px;
 }
+
+.sidebar-open .header {
+    left: 250px;
+}
+
 .header {
     position: absolute;
-    width: 80%;
     height: 50px;
-    left: 20%;
+    left: 16%;
+    right: 0;
     border-bottom: 1px solid #ccc;
 }
 
@@ -30,36 +35,107 @@ body {
     content: "#";
 }
 
+@media (max-width: 720px) {
+    .header {
+        left: 40px;
+    }
+}
+
 .sidebar {
-    width: 20%;
+    width: 16%;
     position:absolute;
     left: 0;
-    top: 0px;
-    bottom: 0px;
-    background: #0D4378;
+    top: 0;
+    bottom: 0;
+    background: rgb(44,62,80);
     padding: 20px;
     box-sizing: border-box;
+    transition: width 0.2s;
+    z-index: 1;
 }
+
+.sidebar-open .sidebar {
+    overflow: visible;
+    width: 250px;
+}
+
+.sidebar-content {
+    transition: opacity 0.5s;
+    transition-delay: opacity 0.2s;
+}
+
+.sidebar-open  .sidebar-content {
+    opacity: 1;
+}
+
+.sidebar .box-shadow-menu {
+    opacity: 0;
+}
+
+.sidebar .box-shadow-menu {
+    position: absolute;
+    left: 10px;
+    right: 0;
+    width: 20px;
+    top: 20px;
+    z-index: 100;
+    height: 30px;
+}
+
+@media (max-width: 720px) {
+    .sidebar {
+        width: 30px;
+        overflow: hidden;
+    }
+
+    .sidebar-content {
+        opacity: 0;
+    }
+
+    .sidebar-open .sidebar h1 {
+        padding-left: 40px;
+    }
+
+    .sidebar .box-shadow-menu {
+        opacity: 1;
+    }
+}
+
 
 .sidebar a {
 
 }
 
+.sidebar h1 {
+    color: rgba(255,255,255,0.75);
+    margin: 0;
+    background-color: rgb(22,31,41);
+    margin: -20px -20px 20px -20px;
+    padding: 12px 20px;
+    font-weight: 100;
+    font-size: 22px;
+}
+
 .sidebar h2 {
-    font-size: 10px;
-    color: rgba(255,255,255,0.5);
+    font-size: 14px;
+    color: rgba(255,255,255,0.75);
     font-style: normal;
     text-transform: uppercase;
     letter-spacing: -0.5px;
+    margin-bottom: 5px;
 }
 
 .create-new-room {
-    text-align: center;
 }
 
 .channellist {
-    margin: 0 0 10px;
+    margin: 0 0 30px;
     list-style: none;
+}
+
+.channellist li {
+    margin: 2px 0;
+    padding: 3px 4px;
 }
 
 .channellist a {
@@ -69,21 +145,39 @@ body {
 
 .channellist a:before {
     content: "#";
-    color: rgba(255,255,255,0.25);
+    color: rgba(255,255,255,0.5);
+}
+
+.channellist .room-current {
+    background-color: rgb(192,57,43);
+    border-radius: 5px;
 }
 
 .main {
     position:absolute;
     top: 60px;
-    bottom:90px;
+    bottom: 75px;
     right:0;
-    left: 20%;
+    left: 16%;
     background: white;
     overflow-y: scroll;
+    transition: width .2s;
  }
 
+ .sidebar-open .main {
+    left: 250px;
+    right: -250px;
+ }
+
+
+@media (max-width: 720px) {
+    .main {
+        left: 40px;
+    }
+}
+
 .user-avatar {
-    width: 30px;
+    width: 40px;
     display: block;
     float: left;
     padding: 5px 10px;
@@ -119,25 +213,40 @@ body {
     background: white;
     position:absolute;
     bottom: 0;
-    height: 90px;
-    width: 80%;
-    left: 20%;
-    border-top: 1px solid #ccc  ;
+    height: 75px;
+    left: 16%;
+    right: 0;
+    border-top: 1px solid #ccc;
+    box-shadow: 0 0 25px rgba(0,0,0,0.1);
+}
+
+@media (max-width: 720px) {
+    .footer {
+        left: 40px;
+    }
 }
 
 .editor {
     margin: 15px;
+    padding-right: 100px;
+    position: relative;
 }
 
-.messagebutton{
+
+.messagebutton {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 90px;
+    height: 45px;
 }
 
 .messageinput {
-    font-size: 16px;
     padding: 2px 5px;
     height: 45px;
-    width: 80%;
-    display: inline-block;
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .errors {
@@ -202,4 +311,21 @@ body {
 .bad-poll-response .modal-backdrop {
     z-index: 0;
     opacity: 1;
+}
+
+.box-shadow-menu {
+    position: relative;
+}
+
+.box-shadow-menu:before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 0.15em;
+    background: white;
+    box-shadow:
+        0 0.25em 0 0 white,
+        0 0.5em 0 0 white;
 }

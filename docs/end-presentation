@@ -1,22 +1,57 @@
+OUTLINE:
+
 INTRODUCTION: SUBJECT & TEAM
+Team
+	- Team is candidates 157 and 152
+	- Candidate 157 is acting stakeholder
+	- We are both developers, testers and designers
+
 Background
-	- <midway>
+	- Students often need a chat tool as primary communication tool
+	- Social media has been frequently used in group projects as tool for communication and collaboration
+		- This raises privacy issues
+		- Can be very distracting when chats with friends are mixed with chat with students
+	- Unfortunate mix of private life and studies
+	- E.g. Facebook is not academia friendly (no formulas, no possible future integration with Mitt UiB
+	- Chat in the cloud, accessible to the web browser, is extremely popular since it gives persitency and ease of access anywhere
+		- mobil, tablet, pc, etc
+	- Trouble communicating in student projects in the past
+
+Goals
+	- To make a free, online, easy-to-use chat tool targeted at students and student projects.
+	- Be able to create groups
+	- Chat directly with a fellow student
+	- maximize privacy
+	- security as a primary focus
+	- Be a good alternative solution to social media
 	- 
 
-Motivation
-	- <midway>
-	- To make a chat program userfriendly only for studying. 
-	- privacy
-	- security
-	- Alternative solution to other social media(distraction and focus)
-
 METHODS
-	- Kanban, trello, slags sprint/fase-konsept
-	- Github
-	
+	- Kanban
+		- Kanban was interpreted by us to be an element of lean
+		- Easy to combine with agile development
+		- Why? Easy to use and learn, forces us to identify the value of the project
+		- Works well for small teams
+		- Little overhead (må jobbe med kanban-cards)
+		- Mixed with a concept of “sprints”
+
+	- A trello board
+		- Used view, create and manage tasks
+		- Be updated on what the other one is doing
+
+	- Github and open source
+		- Kollokvie.chat is open source
+		- Open source can in itself be a development methodology where a community can be established
+
+	- Heuristic Evaluation
+		- Performed heuristic evaluation near the end of the project
+
+	- TDD (Test Driven Development)
+		- The project has 50 tests, most of which were written before the implementation of some aspect of the system
 
 MATERIAL: WHERE DID YOU DATA COME FROM
 Hvilke beslutning vi har tatt og hva vi har basert dette på:
+	- previous experiences
 	- kanban-paper
 	- wsgi whitepaper https://www.python.org/dev/peps/pep-0333/
 	- slack (slack.com)
@@ -24,14 +59,43 @@ Hvilke beslutning vi har tatt og hva vi har basert dette på:
 	- 
 
 RESULTS
-	- demonstrasjon
-	- 
+	- Demo
+	- Basic chat, you are able to communicate with fellow students logged in to kollokvie chat
+	- It's online, you can access it from anywhere
+	- We preserve your privacy, we don't sell our data
+
+FUTURE DEVELOPMENT:
+	- Provide functionality to delete of all your data if you chose to (unlike social media)
+	- Smilies, attachments like images, documents and presentations
+	- Integration into mitt uib (which is also an open source project)
+	- HTTPS certificates for heightened security
 
 DISCUSSION
-	- har vi nådd målet? kan dette fungere for studenter?
-	- hvordan har kanban fungert? 
+	- Have we reached our goal?
+		- We've made a basic tool for collaboration
+		- Long way to go
+	- Could this work for students?
+		- Yes… but
+		- Pragmatic students would choose something else (e.g. Facebook)
+		- Students keen on ditching facebook could very well use it
+		- It would not meet all the expectations of the user, smilies, pictures, etc.
+	- How did Kanban work out?
+		- Kanban, as a tool for accomplishing lean, has worked well
+		- Trello is an excellent tool for managing tasks and implementing Kanban
+	- Challenges
+		- Only two candidates on a relatively large task
+		- Sticking to plan, quite ambitious
+		- Candidate 152 had to learn Github, HTML/CSS and Python
+		- Bugs, as the project developed, bugs was introduced, and being only two leaves little time for bugs
+	- Things we could've done differently
+		- we could have used java, since both students were familiar with it
+		- on the other hand, java could end in a more complex code base
+
 
 CONCLUSION
+	- It has been a success
+	- We have both learned a lot about system development and the tools used (Python, sql, html, css, javascript, web servers, git, github, command line tools) 
+	- The idea of kollokvie.chat is a very good one with regards to collaboration between students, privacy and security.
+	- It is open source, free and <something>
 	- Better solution for students who studies at university.
 	- Aim to communicate with other students to share ideas and information
-	- 

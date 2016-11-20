@@ -5,14 +5,32 @@
 </div>
 
 <div class="sidebar">
-    % if len(rooms) > 0:
-    <h2>Your channels:</h2>
-    <ul class="channellist">
-        % for r in rooms:
-        <li><a href="{{r.get_url()}}">{{r.name}}</a></li>
+    <a class="box-shadow-menu" onclick="document.body.classList.toggle('sidebar-open')"></a>
+
+    <div class="sidebar-content">
+
+        <h1>Kollokvie.chat</h1>
+
+        % if len(user_rooms) > 0:
+        <h2>Your channels:</h2>
+        <ul class="channellist">
+            % for r in user_rooms:
+            <li class="room-{{r.slug if r.name != room.name else "current"}}"><a href="{{r.get_url()}}">{{r.name}}</a></li>
+            % end
+        </ul>
         % end
-    </ul>
-    % end
+
+        % if len(rooms) > 0:
+        <h2>All channels:</h2>
+        <ul class="channellist">
+            % for r in rooms:
+            <li><a href="{{r.get_url()}}">{{r.name}}</a></li>
+            % end
+        </ul>
+        % end
+
+        <p class="create-new-room"><a class="pure-button button-xsmall" href="/room/new">Create new room</a></p>
+    </div>
 </div>
 
 <div id="chat-box" class="main">
@@ -80,7 +98,7 @@ form.addEventListener('submit', function (e) {
 
 timeoutId = window.setInterval(function () {
     poller("{{room.get_url()}}/messages/from/" + get_last_msg_id());
-}, 250);
+}, 500);
 
 window.onload = function () {
     scrollToBottom();

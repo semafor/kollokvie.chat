@@ -68,6 +68,10 @@ def index():
     if user is None:
         redirect('/login')
 
+    recent_room = user.get_recent_room()
+    if recent_room:
+        redirect(recent_room.get_url())
+
     return template('index',
                     template_lookup=[request.app.config['TMPL_FOLDER']],
                     name=user.name,
@@ -118,10 +122,12 @@ def room(rid=None, slug=None):
     if not room.contains_user(user):
         room.add(user)
 
+    user_rooms = user.get_rooms()
+
     return template(
         'room', template_lookup=[request.app.config['TMPL_FOLDER']],
-        room=room, rooms=Room.get_all(order_by='name'), user=user,
-        messages=room.get_messages(),
+        room=room, rooms=Room.get_all(order_by='name', blacklist=user_rooms),
+        user=user, messages=room.get_messages(), user_rooms=user_rooms
     )
 
 

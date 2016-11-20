@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS user_rooms
 (
     user_id TEXT,
     room_id TEXT,
+    joined_utc timestamp,
     FOREIGN KEY(user_id) REFERENCES user(email),
     FOREIGN KEY(room_id) REFERENCES room(rid)
 )

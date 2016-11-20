@@ -60,13 +60,18 @@ class Base(object):
             return instance
 
     @classmethod
-    def get_all(cls, order_by='id', order='ASC'):
+    def get_all(cls, order_by='id', order='ASC', **kwargs):
         if cls.SQL_GET_ALL is None:
             raise NotImplementedError("Can't get all models.")
 
         ret = []
         for row in db.cursor().execute(cls.SQL_GET_ALL % (order_by, order)):
             ret.append(cls.from_row(row))
+
+        blacklist = kwargs.get('blacklist')
+        if blacklist:
+            ret = filter(lambda x: x not in blacklist, ret)
+
         return ret
 
     def execute(self, sql, args):
@@ -193,6 +198,17 @@ class User(Base):
             if room.get_id() == r.get_id():
                 return True
         return False
+
+    def get_recent_room(self):
+        db.cursor().execute(
+            '''
+            SELECT room_id FROM user_rooms WHERE user_id=:user_id
+            ORDER BY joined_utc DESC
+            ''', {'user_id': self.get_id()})
+        res = db.cursor().fetchone()
+        if res is None:
+            return None
+        return Room.get(res['room_id'])
 
 
 class Message(Base):
@@ -330,6 +346,11 @@ class Room(Base):
         ORDER BY %s %s
     '''  # noqa
 
+    def __eq__(self, other):
+        if isinstance(other, self.__class__):
+            return self.name == other.name
+        return False
+
     @staticmethod
     def from_row(row):
         room = Room()
@@ -396,12 +417,13 @@ class Room(Base):
             }
         elif type(thing) is User:
             sql = '''
-                INSERT INTO user_rooms (user_id, room_id)
-                VALUES (:user_id, :room_id)
+                INSERT INTO user_rooms (user_id, room_id, joined_utc)
+                VALUES (:user_id, :room_id, :joined)
             '''
             args = {
                 'room_id': self.get_id(),
                 'user_id': thing.get_id(),
+                'joined': datetime.datetime.now()
             }
 
         self.execute(sql, args)

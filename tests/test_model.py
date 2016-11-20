@@ -170,6 +170,22 @@ class TestUsers(BaseTestCase):
         self.assertTrue(user.in_room(room1))
         self.assertFalse(user.in_room(room2))
 
+    def test_user_joined_room_when(self):
+        user = create_test_user()
+        user.save()
+        room1 = create_test_room()
+        room1.save()
+
+        room2 = create_test_room()
+        room2.name = "foo"
+        room2.slug = room2.name
+        room2.save()
+
+        room1.add(user)
+        room2.add(user)
+
+        self.assertEqual(user.get_recent_room().name, room2.name)
+
 
 class TestMessages(BaseTestCase):
 
@@ -400,6 +416,18 @@ class TestRooms(BaseTestCase):
 
         self.assertTrue(room.contains_user(user1))
         self.assertFalse(room.contains_user(user2))
+
+    def test_get_all_except_some(self):
+        room1 = create_test_room()
+        room1.save()
+        room2 = create_test_room()
+        room2.name = "foo"
+        room2.slug = room2.name
+        room2.save()
+
+        get_all = models.Room.get_all(order_by='rid', blacklist=[room1])
+        self.assertEqual(1, len(get_all))
+        self.assertEqual(room2, get_all[0])
 
 
 class TestAttachments(BaseTestCase):

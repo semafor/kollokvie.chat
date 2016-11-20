@@ -239,3 +239,19 @@ class TestRoom(BaseLoggedInCase):
         self.forms.set(vals)
         out = views.room_new_do()
         self.assertIn('already exist', out)
+
+    def test_user_joins_recent_room_on_index(self):
+        room = models.Room()
+        room.name = 'some room'
+        room.slug = 'slug'
+        room.save()
+
+        room.add(self.user)
+        # We just guess this is a redirect.
+        # TODO: Improve test to be more specific
+        with self.assertRaises(HTTPResponse):
+            views.index()
+
+    def test_user_without_recent_room(self):
+        out = views.index()
+        self.assertIn("Create new room", out)
